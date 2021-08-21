@@ -1,0 +1,234 @@
+% !TeX TS-program = xelatex
+
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{xltxtra}
+\usepackage[main=russian,english]{babel}
+\defaultfontfeatures{Mapping=tex-text}
+\usepackage{listings}
+
+\usepackage[backend=biber,bibstyle=numeric,citestyle=numeric-comp,sorting=none,defernumbers=true,date=long]{biblatex}
+\addbibresource{dns-security.bib}
+
+\usetheme{shl2021}
+
+% for biblatex
+\setbeamerfont{bibliography item}{size*={8pt}{1}}
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\renewcommand*{\bibfont}{\clbr\fontsize{8}{8}\selectfont}
+\DeclareFieldFormat{url}{\color{blue}\url{#1}}
+
+% for listings
+% Solarized colors
+\definecolor{sbase03}{HTML}{002B36}
+\definecolor{sbase02}{HTML}{073642}
+\definecolor{sbase01}{HTML}{586E75}
+\definecolor{sbase00}{HTML}{657B83}
+\definecolor{sbase0}{HTML}{839496}
+\definecolor{sbase1}{HTML}{93A1A1}
+\definecolor{sbase2}{HTML}{EEE8D5}
+\definecolor{sbase3}{HTML}{FDF6E3}
+\definecolor{syellow}{HTML}{B58900}
+\definecolor{sorange}{HTML}{CB4B16}
+\definecolor{sred}{HTML}{DC322F}
+\definecolor{smagenta}{HTML}{D33682}
+\definecolor{sviolet}{HTML}{6C71C4}
+\definecolor{sblue}{HTML}{268BD2}
+\definecolor{scyan}{HTML}{2AA198}
+\definecolor{sgreen}{HTML}{859900}
+\lstset{
+        columns=flexible,
+        keepspaces=true,
+        showstringspaces=false,
+        showtabs=false,
+        tabsize=4,
+        frame=single,
+        basicstyle=\fontsize{10pt}{12}\ttfamily\color{sbase00},
+        backgroundcolor=\color{sbase3},
+        keywordstyle=\color{scyan},
+        commentstyle=\color{sbase1},
+        stringstyle=\color{sblue},
+        numberstyle=\color{sviolet},
+        identifierstyle=\color{sbase00},
+        rulecolor=\color{sbase1},
+        framerule=1pt
+}
+
+\lstdefinelanguage{nginx}{
+        morestring=[b]{"},
+        morecomment=[l]\#,
+        morekeywords={map,default,server,listen,proxy_pass,ssl_preread,on}
+}
+
+% for listings background
+\makeatletter
+\let\old@lstKV@SwitchCases\lstKV@SwitchCases
+\def\lstKV@SwitchCases#1#2#3{}
+\makeatother
+\usepackage{lstlinebgrd}
+\makeatletter
+\let\lstKV@SwitchCases\old@lstKV@SwitchCases
+
+\lst@Key{numbers}{none}{%
+    \def\lst@PlaceNumber{\lst@linebgrd}%
+    \lstKV@SwitchCases{#1}%
+    {none:\\%
+     left:\def\lst@PlaceNumber{\llap{\normalfont
+                \lst@numberstyle{\thelstnumber}\kern\lst@numbersep}\lst@linebgrd}\\%
+     right:\def\lst@PlaceNumber{\rlap{\normalfont
+                \kern\linewidth \kern\lst@numbersep
+                \lst@numberstyle{\thelstnumber}}\lst@linebgrd}%
+    }{\PackageError{Listings}{Numbers #1 unknown}\@ehc}}
+\makeatother
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \btIfInRange{number}{range list}{TRUE}{FALSE}
+%
+% Test in int number <number> is element of a (comma separated) list of ranges
+% (such as: {1,3-5,7,10-12,14}) and processes <TRUE> or <FALSE> respectively
+
+\newcount\bt@rangea
+\newcount\bt@rangeb
+
+\newcommand\btIfInRange[2]{%
+    \global\let\bt@inrange\@secondoftwo%
+    \edef\bt@rangelist{#2}%
+    \foreach \range in \bt@rangelist {%
+        \afterassignment\bt@getrangeb%
+        \bt@rangea=0\range\relax%
+        \pgfmathtruncatemacro\result{ ( #1 >= \bt@rangea) && (#1 <= \bt@rangeb) }%
+        \ifnum\result=1\relax%
+            \breakforeach%
+            \global\let\bt@inrange\@firstoftwo%
+        \fi%
+    }%
+    \bt@inrange%
+}
+\newcommand\bt@getrangeb{%
+    \@ifnextchar\relax%
+        {\bt@rangeb=\bt@rangea}%
+        {\@getrangeb}%
+}
+\def\@getrangeb-#1\relax{%
+    \ifx\relax#1\relax%
+        \bt@rangeb=100000%   \maxdimen is too large for pgfmath
+    \else%
+        \bt@rangeb=#1\relax%
+    \fi%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \btLstHL<overlay spec>{range list}
+%
+% TODO BUG: \btLstHL commands can not yet be accumulated if more than one overlay spec match.
+% 
+\newcommand<>{\btLstHL}[1]{%
+\only#2{\btIfInRange{\value{lstnumber}}{#1}{\color{sbase2}\def\lst@linebgrdcmd{\color@block}}{\def\lst@linebgrdcmd####1####2####3{}}}%
+}%
+\makeatother
+
+\title{Безопасность DNS}
+\author{Филипп Кулин}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Откиньтесь на спинку кресла}
+        \begin{itemize}
+                \item Эта презентация сделана с помощью \LaTeX
+                \item Я расскажу страшную сказку
+                \item Я попытаюсь сделать акцент на точку зрения роботов
+                \item Несмотря на обыденность, тема DNS очень специфична
+                \item Без сомнения, мы рассмотрим и какие-то решения
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNS --- всему голова}
+        \begin{itemize}
+                \item Пользователи сети
+                \item API, CDN
+                \item Kubernetes, автообнаружение и конфигурация сервисов
+                \item Невообразимое количество всего
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Где-то под сценой...}
+% Мои любимые примеры
+        \begin{itemize}
+                \item MySQL определяет домен для подключившегося IP
+                \item Apache определяет домен для подключившегося IP\\{\small даже если \texttt{HostnameLookups Off}, но есть \texttt{Require}}
+                \item Microsoft Windows постоянно шлет DNS Update в сеть
+                \item Запустите tcpdump/WireShark
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNS --- это просто?}
+        Три каверзных вопроса:
+        \begin{itemize}
+                \item Каков максимальный размер доменного имени?
+                \item Точку на конце надо ставить?
+                \item Что именно спрашивает ресолвер и что отвечают DNS-сервера при рекурсивном обходе?
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Как устроен DNS}
+        здесь схемка
+\end{frame}
+
+\begin{frame}{Особенности классического DNS}
+        \begin{itemize}
+                \item UDP транспорт. Нет соединения
+                \item Нет идентификации серверов DNS
+                \item Нет контроля данных
+                \item Нет шифрования
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Угорозы в системе DNS}
+        здесь схемка
+\end{frame}
+
+\begin{frame}{Заложенная в DNS безопасность}
+\end{frame}
+
+\begin{frame}{Основные проблемы}
+        \begin{itemize}
+                \item Подделка
+                \begin{itemize}
+                        \item Отравление
+                        \item Взлом серверов и замена записей
+                        \item Поддельные серверы, BGP-injection
+                \end{itemize}
+                \item Прослушка
+                \begin{itemize}
+                        \item Шпионаж и промышленный шпионаж
+                        \begin{itemize}
+                                \item ... с использованием госрегулирования
+                        \end{itemize}
+                        \item Маркетинговые исследования
+                        \item Система блокировок сайтов
+                \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Вопросы}
+        \center В любом случае пишите мне
+        \vskip2cm
+        \center{schors@gmail.com}
+\end{frame}
+
+\nocite{*}
+\setbeamertemplate{frametitle continuation}{}
+\begin{frame}[t]{Ссылки}
+\printbibliography
+\end{frame}
+
+\end{document}
+
+
