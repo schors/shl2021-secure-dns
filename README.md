@@ -12,11 +12,11 @@ https://highload.ru/spb/2021/abstracts/7953
 * Обзор современной теории и практик защиты DNS.
 * Кратко о защите от подделки DNS, включая историю вопроса.
 * Защита от прослушки.
-** История: DNSCrypt.
-** DNS-over-TLS.
-** DNS-over-HTTP Google API.
-** DNS-over-HTTP/2.
-** Минимизация QNAME.
+  * История: DNSCrypt.
+  * DNS-over-TLS.
+  * DNS-over-HTTP Google API.
+  * DNS-over-HTTP/2.
+  * Минимизация QNAME.
 * Немного пофантазируем.
 
 [Скомпилированная презентация (PDF)](dns-security.pdf)
