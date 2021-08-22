@@ -143,24 +143,25 @@
         \begin{itemize}
                 \item Эта презентация сделана с помощью \LaTeX
                 \item Я расскажу страшную сказку
-                \item Я попытаюсь сделать акцент на точку зрения роботов
+                \item Я сделаю акцент на точку зрения роботов
                 \item Несмотря на обыденность, тема DNS очень специфична
-                \item Без сомнения, мы рассмотрим и какие-то решения
+                \item Я рассмотрю какие-то инструменты
         \end{itemize}
 \end{frame}
 
 \begin{frame}{DNS --- всему голова}
         \begin{itemize}
-                \item Пользователи сети
-                \item API, CDN
-                \item Kubernetes, автообнаружение и конфигурация сервисов
+                \item Жизнь пользователей в сети
+                \item Запросы к API, работа с CDN
+                \item Облака, микросервисы, автообнаружение и конфигурация
                 \item Невообразимое количество всего
         \end{itemize}
 \end{frame}
 
-\begin{frame}{Где-то под сценой...}
+\begin{frame}{Тайная жизнь привычных программ}
 % Мои любимые примеры
         \begin{itemize}
+                \item SSHD определяет домен для подключившегося IP\\{\small и этот факт является одним из источников седых волос у админов}
                 \item MySQL определяет домен для подключившегося IP
                 \item Apache определяет домен для подключившегося IP\\{\small даже если \texttt{HostnameLookups Off}, но есть \texttt{Require}}
                 \item Microsoft Windows постоянно шлет DNS Update в сеть
@@ -213,6 +214,96 @@
                         \end{itemize}
                         \item Маркетинговые исследования
                         \item Система блокировок сайтов
+                \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Защита от подделки}
+        \begin{itemize}
+                \item Не «взлетевший» DNSCurve
+                \item Расширение DNSSEC
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSCurve}
+                Концепция
+                \begin{itemize}
+                        \item Аутентификация авторитативного DNS-сервера
+                        \item Защита обмена между ресолвером и авторитативным сервером
+                \end{itemize}
+                Принцип действия
+                \begin{itemize}
+                        \item Публичный ключ DNS-сервера с магическим префиксом \texttt{"uz5"} в NS-записи домена:\\
+                                {\small\texttt{\textbf{uz5}qry75vfy162c239jgx7v2knkwb01g3d04qd4379s6mtcx2f0828.dnscurve.io}}
+                        \item Защищенное соединение с DNS-сервером по специальному протоколу
+                \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSCurve. Особенности}
+        \begin{itemize}
+                \item Не меняет саму спецификацию DNS
+                \item Основан на вере в целостность системы
+                \item Зависит от источника ответа
+                \item Внедрение отсутствует
+                \item Представляет исключительно академический интерес
+                \item \textbf{Это был экспериментальный стенд для ED25519}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSSEC}
+        \begin{itemize}
+                \item Концепция
+                \begin{itemize}
+                        \item Источник записи не важен. Используя доверенный корневой ключ возможно проверить любую подписанную запись
+                \end{itemize}
+                \item Принцип действия
+                \begin{itemize}
+                        \item Записи зоны подписаны ключом зоны %важно - не сервера
+                        \item Подтверждения подписи выстраиваются в цепочку доверия
+                \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSSEC. Подпись зоны}
+        картинка
+\end{frame}
+
+\begin{frame}{DNSSEC. Цепочка доверия}
+        картинка
+\end{frame}
+
+\begin{frame}{DNSSEC. Особенности}
+        \begin{itemize}
+                \item Требует аккуратности и непрерывного обслуживания даже в статическом состоянии
+                \item Сложные реализации «отрицательного ответа»
+                \item Большой размер ответа
+                \item Крайне слабая глубина внедрения
+                \item \textbf{Источник ответа не важен}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSSEC. Использование}
+        \begin{itemize}
+                \item Прозрачная проверка\\
+                {\small Потребитель получает фильтрованные ответы }
+                \item Явная проверка\\
+                {\small Потребитель явно указывает ресолверу, что хочет получить проверенный результат. Проверяет флаги ответа }
+                \item Усиленная проверка\\
+                {\small Потребитель проверяет подписи сам }
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSSEC. Тренды}
+        \begin{itemize}
+                \item Алгоритм ECDSA
+                \begin{itemize}
+                        \item скорость
+                        \item небольшой размер ответов по сравнению с RSA
+                \end{itemize}
+                \item Подпись «на лету»
+                \begin{itemize}
+                        \item использование «белой лжи» \supercite{dnssec-wl}
+                        \item использование «чёрной лжи» \supercite{dnssec-bl}
                 \end{itemize}
         \end{itemize}
 \end{frame}
