@@ -175,7 +175,7 @@
                 \item<1-> Каков максимальный размер доменного имени? % Паскалевские строки с длиной в начале и 63 символами, последняя длина 0, всё вместе 255
                 \item<1-> Точку на конце надо ставить? % 1. Это удобно программам 2. Их этого произошли правила интерпретации
                 \item<1-> Что именно спрашивает ресолвер и что отвечают DNS-сервера при рекурсивном обходе?
-                \item<2-> Мы много о чем не поговорим
+                \item<2-> \textbf{Мы много о чем не поговорим}
         \end{itemize}
 \end{frame}
 
@@ -247,7 +247,6 @@
                 \item Зависит от источника ответа
                 \item Внедрение практически отсутствует
                 \item Представляет исключительно академический интерес
-                \item Довольно быстрый, так как не имеет стадии "рукопожатия"
                 \item \textbf{Это был экспериментальный стенд для ED25519} % кривые Эдвардса
         \end{itemize}
 \end{frame}
@@ -310,8 +309,34 @@
         \end{itemize}
 \end{frame}
 
+\begin{frame}{DNSSEC. Поддержка}        
+        \begin{itemize}
+                \item \textbf{Клиенты} \\
+                \texttt{dig, drill}
+                \item \textbf{Ресолверы} \\
+                systemd-resolved, dnsmask, unbound, KNOT Resolver, CoreDNS, PowerDNS recursor, BIND
+                \item \textbf{Авторитативные сервера DNS} \\
+                \texttt{KNOT, CoreDNS, PowerDNS, NSD, YADIFA, BIND}
+                \item \textbf{Сервера DNS с подписью «на лету»} \\
+                \texttt{KNOT, CoreDNS, PowerDNS (частично)}
+        \end{itemize}
+\end{frame}
+
+% Сюда что-нибудь про настройку и облака, и вот это всё
+
 
 % DoT autodiscover https://knot-resolver.readthedocs.io/en/stable/modules-experimental_dot_auth.html
+
+\begin{frame}{Защита от прослушки DNS}
+        \begin{itemize}
+                \item<1->
+                \item<2->
+                \item<3->
+                \item<4->
+                \item<5->
+        \end{itemize}
+\end{frame}
+
 
 \begin{frame}{Вопросы}
         \center В любом случае пишите мне
