@@ -143,8 +143,8 @@
         \begin{itemize}
                 \item Эта презентация сделана с помощью \LaTeX
                 \item Я расскажу страшную сказку
-                \item Я сделаю акцент на точку зрения роботов
                 \item Несмотря на обыденность, тема DNS очень специфична
+                \item Я сделаю акцент на точку зрения роботов
                 \item Я рассмотрю какие-то инструменты
         \end{itemize}
 \end{frame}
@@ -236,7 +236,7 @@
                 \begin{itemize}
                         \item Публичный ключ DNS-сервера с магическим префиксом \texttt{"uz5"} в NS-записи домена:\\
                                 {\small\texttt{\textbf{uz5}qry75vfy162c239jgx7v2knkwb01g3d04qd4379s6mtcx2f0828.dnscurve.io}}
-                        \item Защищенное соединение с DNS-сервером по специальному протоколу
+                        \item Обмен с DNS-сервером шифруется
                 \end{itemize}
 \end{frame}
 
@@ -247,7 +247,7 @@
                 \item Зависит от источника ответа
                 \item Внедрение практически отсутствует
                 \item Представляет исключительно академический интерес
-                \item \textbf{Это был экспериментальный стенд для ED25519} % кривые Эдвардса
+                \item Шифрование на основе ED25519 % кривые Эдвардса
         \end{itemize}
 \end{frame}
 
@@ -329,11 +329,11 @@
 
 \begin{frame}{Защита от прослушки DNS}
         \begin{itemize}
-                \item<1->
-                \item<2->
-                \item<3->
-                \item<4->
-                \item<5->
+                \item<1->DNSCrypt
+                \item<2->DNS-over-HTTPS Google API
+                \item<3->DNS-over-TLS
+                \item<4->DNS-over-HTTP/2
+                \item<5->Минимизация QNAME при запросах
         \end{itemize}
 \end{frame}
 
