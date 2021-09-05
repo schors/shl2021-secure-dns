@@ -165,6 +165,7 @@
                 \item MySQL определяет домен для подключившегося IP
                 \item Apache определяет домен для подключившегося IP\\{\small даже если \texttt{HostnameLookups Off}, но есть \texttt{Require}}
                 \item Microsoft Windows постоянно шлет DNS Update в сеть
+                \item Docker, Kubernetes, etc
                 \item Запустите tcpdump/WireShark
         \end{itemize}
 \end{frame}
@@ -279,11 +280,12 @@
                 \item Сложные реализации «отрицательного ответа»
                 \item Большой размер ответа
                 \item Крайне слабая глубина внедрения
+                \item возможность использования устаревших ответов % в рамках срока действия подписи
                 \item \textbf{Источник ответа не важен}
         \end{itemize}
 \end{frame}
 
-\begin{frame}{DNSSEC. Использование}
+\begin{frame}{DNSSEC. Варианты использования}
         \begin{itemize}
                 \item Прозрачная проверка\\
                 {\small Потребитель получает фильтрованные ответы }
@@ -326,6 +328,7 @@
 
 
 % DoT autodiscover https://knot-resolver.readthedocs.io/en/stable/modules-experimental_dot_auth.html
+% Великобритания https://www.opennet.ru/opennews/art.shtml?num=51046
 
 \begin{frame}{Защита от прослушки DNS}
         \begin{itemize}
