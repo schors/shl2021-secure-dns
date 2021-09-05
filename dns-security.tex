@@ -143,9 +143,8 @@
         \begin{itemize}
                 \item Эта презентация сделана с помощью \LaTeX
                 \item Я расскажу страшную сказку
-                \item Несмотря на обыденность, тема DNS очень специфична
-                \item Я сделаю акцент на точку зрения роботов
-                \item Я рассмотрю какие-то инструменты
+                \item Несмотря на обыденность, тема DNS очень специфична % мало кто лезет под капот, а кто лезет - быстро забывает
+                \item Я сделаю акцент на эксплуатацию сервисов
         \end{itemize}
 \end{frame}
 
@@ -161,12 +160,12 @@
 \begin{frame}{Тайная жизнь привычных программ}
 % Мои любимые примеры
         \begin{itemize}
-                \item SSHD определяет домен для подключившегося IP\\{\small и этот факт является одним из источников седых волос у админов}
-                \item MySQL определяет домен для подключившегося IP
-                \item Apache определяет домен для подключившегося IP\\{\small даже если \texttt{HostnameLookups Off}, но есть \texttt{Require}}
-                \item Microsoft Windows постоянно шлет DNS Update в сеть
-                \item Docker, Kubernetes, etc
-                \item Запустите tcpdump/WireShark
+                \item<1-> SSHD определяет домен для подключившегося IP\\{\small и этот факт является одним из источников седых волос у админов}
+                \item<2-> MySQL определяет домен для подключившегося IP
+                \item<3-> Apache определяет домен для подключившегося IP\\{\small даже если \texttt{HostnameLookups Off}, но есть \texttt{Require}}
+                \item<4-> Microsoft Windows постоянно шлет DNS Update в сеть
+                \item<5-> Docker, Kubernetes, etc
+                \item<6-> \textbf{Запустите tcpdump/WireShark}
         \end{itemize}
 \end{frame}
 
@@ -174,10 +173,10 @@
         Три каверзных вопроса:
         \begin{itemize}
                 \item<1-> Каков максимальный размер доменного имени? % Паскалевские строки с длиной в начале и 63 символами, последняя длина 0, всё вместе 255
-                \item<1-> Точку на конце надо ставить? % 1. Это удобно программам 2. Их этого произошли правила интерпретации
-                \item<1-> Что именно спрашивает ресолвер и что отвечают DNS-сервера при рекурсивном обходе?
-                \item<2-> \textbf{Мы много о чем не поговорим}
+                \item<2-> Точку на конце надо ставить? % 1. Это удобно программам 2. Их этого произошли правила интерпретации
+                \item<3-> Что именно спрашивает ресолвер и что отвечают DNS-сервера при рекурсивном обходе?
         \end{itemize}
+        % во время подготовки к докладу я нашел ошибку/неточность в сервере NSD
 \end{frame}
 
 \begin{frame}{Как устроен DNS}
@@ -200,23 +199,40 @@
 \begin{frame}{Заложенная в DNS безопасность}
 \end{frame}
 
+% завидую хакерам 80-ых и 90-ых - халява
+
 \begin{frame}{Основные проблемы}
         \begin{itemize}
-                \item Подделка
+                \item<1-> Подделка
                 \begin{itemize}
-                        \item Отравление
-                        \item Взлом серверов и замена записей
-                        \item Поддельные серверы, BGP-injection
+                        \item<1-> Отравление
+                        \item<1-> Взлом серверов и замена записей
+                        \item<1-> Поддельные серверы, BGP-injection
+                        \item<1-> %пример про подделку
                 \end{itemize}
-                \item Прослушка
+                \item<2-> Прослушка
                 \begin{itemize}
-                        \item Шпионаж и промышленный шпионаж
+                        \item<2-> Шпионаж и промышленный шпионаж
                         \begin{itemize}
-                                \item ... с использованием госрегулирования
+                                \item<2-> ... с использованием госрегулирования
                         \end{itemize}
-                        \item Маркетинговые исследования
-                        \item Система блокировок сайтов
+                        \item<2-> Маркетинговые исследования
+                        \item<2-> Система блокировок сайтов
+                        \item<2-> % пример про прослушку и про телегу, и RFC
                 \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{А так ли страшен чёрт?}
+        \begin{itemize}
+                \item<2-> DNS-уязвимости не самоцель, часто нужны условия
+                \item<3-> Однако DNS никогда не в одиночестве
+                \item<4-> Ваш сетевой периметр защищен? Точно?
+                \item<5-> Ваша сеть получает подписанные маршруты?
+                        \begin{itemize}
+                                \item<6-> Вы ведете журнал странных анонсов?
+                        \end{itemize}
+                \item<6-> Ваши сервисы проверяют сертификат соединения? % при обращении наружу, журнал этого есть?
         \end{itemize}
 \end{frame}
 
@@ -247,7 +263,6 @@
                 \item Основан на вере в целостность системы
                 \item Зависит от источника ответа
                 \item Внедрение практически отсутствует
-                \item Представляет исключительно академический интерес
                 \item Шифрование на основе ED25519 % кривые Эдвардса
         \end{itemize}
 \end{frame}
@@ -276,12 +291,12 @@
 
 \begin{frame}{DNSSEC. Особенности}
         \begin{itemize}
+                \item \textbf{Источник ответа не важен}
                 \item Требует аккуратности и непрерывного обслуживания даже в статическом состоянии
                 \item Сложные реализации «отрицательного ответа»
                 \item Большой размер ответа
+                \item Возможность использования «устаревших» ответов % в рамках срока действия подписи
                 \item Крайне слабая глубина внедрения
-                \item возможность использования устаревших ответов % в рамках срока действия подписи
-                \item \textbf{Источник ответа не важен}
         \end{itemize}
 \end{frame}
 
@@ -324,24 +339,159 @@
         \end{itemize}
 \end{frame}
 
-% Сюда что-нибудь про настройку и облака, и вот это всё
-
-
 % DoT autodiscover https://knot-resolver.readthedocs.io/en/stable/modules-experimental_dot_auth.html
 % Великобритания https://www.opennet.ru/opennews/art.shtml?num=51046
 
 \begin{frame}{Защита от прослушки DNS}
+        \onslide<1-> Шифрование канала
         \begin{itemize}
-                \item<1->DNSCrypt
-                \item<2->DNS-over-HTTPS Google API
-                \item<3->DNS-over-TLS
+                \item<2->DNSCrypt
+                \item<3->DNS-over-HTTPS Google API
+                \item<4->DNS-over-TLS
                 \item<4->DNS-over-HTTP/2
-                \item<5->Минимизация QNAME при запросах
+                \item<4->DNS-over-QUIC
+        \end{itemize}
+        \onslide<5-> Алгоритмы и фильтры
+        \begin{itemize}
+                \item<6->Минимизация QNAME при запросах
+                \item<7->EDNS0 Client subnets
         \end{itemize}
 \end{frame}
 
+\begin{frame}{Шифрование канала}
+        Защита канала сводится к двум задачам
+        \begin{itemize}
+                \item Аутентификация ресолвера
+                \item Защита обмена между потребителем ресолвером
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSCrypt}
+        \begin{itemize}
+                \item Настройка мастер-ключа и имени сервера
+                \item Получение «короткого» ключа и сертификата
+                \item Запросы к серверу, идентичные DNSCurve
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSCrypt. Особенности}
+        \begin{itemize}
+                \item Не меняет спецификацию DNS
+                \item Нет ни RFC, ни Draft. Только спецификация на сайте
+                \item Имеет заметную программную поддержку
+                \item Не предусмотрена замена мастер-ключа
+                \item Не «взлетел»
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNSCrypt. Поддержка}
+        А надо?
+\end{frame}
+
+\begin{frame}{DNS-over-HTTPS (Google API)}
+        Google предоставляет JSON-API к DNS\\
+        Страница с описанием:\\
+        \small{\textcolor{blue}{\href{https://developers.google.com/speed/public-dns/docs/dns-over-https}{https://developers.google.com/speed/public-dns/docs/dns-over-https}}}
+        ~\\
+        Массово используется для веб-приложений
+\end{frame}
+
+
+\begin{frame}{DNS-over-TLS (DoT)}
+\end{frame}
+
+\begin{frame}{DNS-over-TLS (DoT). Особенности}
+\end{frame}
+
+\begin{frame}{DNS-over-TLS (DoT). Поддержка}
+\end{frame}
+
+\begin{frame}{DNS-over-HTTPS (DoH)}
+\end{frame}
+
+\begin{frame}{DNS-over-HTTPS (DoH). Особенности}
+\end{frame}
+
+\begin{frame}{DNS-over-HTTPS (DoH). Поддержка}
+\end{frame}
+
+\begin{frame}{DNS-over-QUIC (DoQ)}
+\end{frame}
+
+\begin{frame}{Минимизация QNAME}
+\end{frame}
+
+\begin{frame}{EDNS0 Client subnet}
+\end{frame}
+
+\begin{frame}{Защита DNS и ваш сервер}
+        \begin{itemize}
+                \item systemd-resolved
+                \item unbound или knot-resolver
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Защита DNS и автоматизация}
+        SSHFP и ключ хоста
+\end{frame}
+
+\begin{frame}{Защита DNS и kubernetes}
+\end{frame}
+
+% Сюда что-нибудь про настройку и облака, и вот это всё
+
+\begin{frame}{Реакционизм. Подделка}
+        \only<1>{Картинка}%
+        \onslide<2->
+        \begin{itemize}
+                \item<2-> Не позволяет подставлять «свой» ответ
+                \begin{itemize}
+                        \item<3-> Противоречит копоративным политикам
+                        \item<4-> Мешает спецслужбам проводить спецоперации
+                \end{itemize}
+                \item<5-> Переусложненное обслуживание приводит к ошибкам
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Реакционизм. Прослушка}
+        \only<1>{Картинка Родина Слышит}
+        \begin{itemize}
+                \item<2-> Не позволяет анализировать DNS-запросы
+                \begin{itemize}
+                        \item<3-> Нарушает корпоративные стандарты безопасности
+                        \item<4-> Мешает приложениям защиты отслеживать действия браузера
+                        \item<5-> Создаёт видимость безопасности % конечно, есть серебряная пуля
+                \end{itemize}
+                \item<6-> Дополнительная нагрузка
+                \item<7-> Цикл получения ответа неприемлимо долгий
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Реакционизм. Гоcрегулирование}
+        \only<1>{Картинка с самураем и флажками/нашивками РКН/FCC/etc}
+        \begin{itemize}
+                \item<2-> Большинство «госблокировок» в мире основано на DNS
+                \item<3-> НСДИ РФ не совместима с DNSSEC % в принципе не намеренно
+                \item<4-> НСДИ РФ не поддерживает защиту % а зря, буква "Б" в Роскомнадзор, ГРЧЦ, ЦМУ ССОП и НСДИ
+                \item<5-> Давление UK ISPA % https://www.opennet.ru/opennews/art.shtml?num=51046
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Многое осталось за кадром}
+        \begin{itemize}
+                \item Обслуживание и эксплуатация DNSSEC, DoT/DoH
+                \item Применение DNSSEC, SSHFP, DANE 
+                \item Обзор авторитативных серверов
+                \item Обзор кэширующих серверов, включая \texttt{systemd.resoved}
+                \item Инструменты
+                \item \texttt{glibc} и \texttt{resolv.conf}
+                \item \textbf{...}
+        \end{itemize}
+\end{frame}
 
 \begin{frame}{Вопросы}
+        \center Перед докладом я многое освежил в памяти, многое не вошло в доклад
+        \vskip1cm
         \center В любом случае пишите мне
         \vskip2cm
         \center{schors@gmail.com}
