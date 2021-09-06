@@ -329,7 +329,7 @@
 \begin{frame}{DNSSEC. Поддержка}        
         \begin{itemize}
                 \item \textbf{Клиенты} \\
-                \texttt{dig, drill}
+                \texttt{dig/delv, drill, kdig}
                 \item \textbf{Ресолверы} \\
                 systemd-resolved, dnsmask, unbound, KNOT Resolver, CoreDNS, PowerDNS recursor, BIND
                 \item \textbf{Авторитативные сервера DNS} \\
@@ -386,6 +386,7 @@
 \end{frame}
 
 \begin{frame}{DNSCrypt. Поддержка}
+        % dig @77.88.8.78 -p 15353 2.dnscrypt-cert.browser.yandex.net. -t TXT +short
         А надо?
 \end{frame}
 
@@ -427,7 +428,7 @@
 \begin{frame}{DNS-over-TLS (DoT). Поддержка}
         \begin{itemize}
                 \item \textbf{Клиенты} \\
-                \texttt{???}
+                \texttt{kdig, dig} % dig 9.17.7 17 марта 2021
                 \item \textbf{Ресолверы} (могут принять) \\
                 \texttt{unbound, CoreDNS, dnsdist, KNOT Resolver}
                 \item \textbf{Ресолверы} (могут спросить) \\
@@ -447,7 +448,11 @@
 % Added in 7.62.0
 % curl --doh-url https://cloudflare-dns.com/dns-query https://www.google.com
 
+% dig BIND 9.17.11 25 ноября 2020
+
 % curl -H 'accept: application/dns-message' 'https://dns.google/dns-query?dns=q80BAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB'  | hexdump -c
+
+% knot 3.0.0, September 9, 2020
 % kdig @1.1.1.1 +https example.com.
 % kdig @193.17.47.1 +https=/doh example.com.
 % kdig @8.8.4.4 +https +https-get example.com.
@@ -520,10 +525,10 @@
 \begin{frame}{Многое осталось за кадром}
         \begin{itemize}
                 \item Обслуживание и эксплуатация DNSSEC, DoT/DoH
-                \item Применение DNSSEC, SSHFP, DANE 
-                \item Обзор авторитативных серверов
-                \item Обзор кэширующих серверов, включая \texttt{systemd.resoved}
-                \item Инструменты
+                \item Применение DNSSEC: SSHFP, DANE, etc
+                \item Обзор серверов, включая \texttt{stub-ресолверы}
+                \item Обзор клиентов и инструментов
+                \item DNS Stamps (ссылки sdna://)
                 \item \texttt{glibc} и \texttt{resolv.conf}
                 \item \textbf{...}
         \end{itemize}
