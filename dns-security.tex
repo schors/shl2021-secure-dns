@@ -367,6 +367,7 @@
 \end{frame}
 
 \begin{frame}{DNSCrypt}
+        Принцип действия
         \begin{itemize}
                 \item Настройка мастер-ключа и имени сервера
                 \item Получение «короткого» ключа и сертификата
@@ -394,16 +395,46 @@
         \small{\textcolor{blue}{\href{https://developers.google.com/speed/public-dns/docs/dns-over-https}{https://developers.google.com/speed/public-dns/docs/dns-over-https}}}
         ~\\
         Массово используется для веб-приложений
+        % curl -H 'accept: application/dns-json' 'https://cloudflare-dns.com/dns-query?name=example.com&type=A' | jq .
 \end{frame}
 
 
 \begin{frame}{DNS-over-TLS (DoT)}
+        \begin{itemize}
+                \item<1-> Устанавливается защищенное TLS-соединение (порт 853)
+                \item<1-> Внутри соединения – стандартный DNS протокол
+                \item<1-> {\small Самая простая инсталяция – проксирование \texttt{nginx} через \texttt{ngx\_stream\_ssl\_module} на обычный DNS}
+        \end{itemize}
+        ~\\
+        \begin{itemize}
+                \item<2-> А есть ещё DNS-over-DTLS...
+        \end{itemize}
 \end{frame}
 
 \begin{frame}{DNS-over-TLS (DoT). Особенности}
+        \begin{itemize}
+                \item Не меняет спецификацию DNS
+                \item Требует установки TLS-соединения (дорого)
+                \item Требует стартовых настроек клиента
+                \begin{itemize}
+                        \item Нет автоопределения
+                        \item Требует «бутстрапа» имени сервера % Не бывает сертификатов на IP (если вы не Cloudflare)
+                \end{itemize}
+                \item Специальный 853 порт
+        \end{itemize}
 \end{frame}
 
 \begin{frame}{DNS-over-TLS (DoT). Поддержка}
+        \begin{itemize}
+                \item \textbf{Клиенты} \\
+                \texttt{???}
+                \item \textbf{Ресолверы} (могут принять) \\
+                \texttt{unbound, CoreDNS, dnsdist, KNOT Resolver}
+                \item \textbf{Ресолверы} (могут спросить) \\
+                \texttt{unbound, CoreDNS, KNOT Resolver}
+                \item \textbf{Сервисы} \\
+                \texttt{Google DNS, Cloudflare DNS, Quad9}
+        \end{itemize}
 \end{frame}
 
 \begin{frame}{DNS-over-HTTPS (DoH)}
@@ -413,6 +444,15 @@
 \end{frame}
 
 \begin{frame}{DNS-over-HTTPS (DoH). Поддержка}
+% Added in 7.62.0
+% curl --doh-url https://cloudflare-dns.com/dns-query https://www.google.com
+
+% curl -H 'accept: application/dns-message' 'https://dns.google/dns-query?dns=q80BAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB'  | hexdump -c
+% kdig @1.1.1.1 +https example.com.
+% kdig @193.17.47.1 +https=/doh example.com.
+% kdig @8.8.4.4 +https +https-get example.com.
+% kdig @8.8.8.8 +https +tls-hostname=dns.google +fastopen example.com.
+
 \end{frame}
 
 \begin{frame}{DNS-over-QUIC (DoQ)}
