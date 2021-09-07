@@ -143,9 +143,9 @@
         \begin{itemize}
                 \item Эта презентация сделана с помощью \LaTeX
                 \item Я расскажу страшную сказку
-                \item Несмотря на обыденность, тема DNS очень специфична % мало кто лезет под капот, а кто лезет - быстро забывает
-                \item Я сделаю акцент на эксплуатацию сервисов
+                \item Тема DNS очень специфична % мало кто лезет под капот, а кто лезет - быстро забывает %\item Я сделаю акцент на эксплуатацию сервисов
         \end{itemize}
+        Пока я тут болтаю, вы можете поставить вот такие вот программы
 \end{frame}
 
 \begin{frame}{DNS --- всему голова}
@@ -197,6 +197,10 @@
 \end{frame}
 
 \begin{frame}{Заложенная в DNS безопасность}
+        \onslide<2->{``... действия, которые с современной точки зрения могут показаться неправильными или ошибочными,
+        часто оказывались естественным следствием господствовавшего в те времена понимания тех или иных вещей, а
+        также ограниченности доступных ресурсов.``}
+        \onslide<3-> \rightline{{\rm --- Брайан Керниган}}\supercite{unix-memoir}
 \end{frame}
 
 % завидую хакерам 80-ых и 90-ых - халява
@@ -233,6 +237,7 @@
                                 \item<6-> Вы ведете журнал странных анонсов?
                         \end{itemize}
                 \item<6-> Ваши сервисы проверяют сертификат соединения? % при обращении наружу, журнал этого есть?
+                \item<7-> \textbf{Однако, современные взломы основаны на бардаке}
         \end{itemize}
 \end{frame}
 
@@ -331,7 +336,7 @@
                 \item \textbf{Клиенты} \\
                 \texttt{dig/delv, drill, kdig}
                 \item \textbf{Ресолверы} \\
-                systemd-resolved, dnsmask, unbound, KNOT Resolver, CoreDNS, PowerDNS recursor, BIND
+                \texttt{systemd-resolved, dnsmask, unbound, KNOT Resolver, CoreDNS, PowerDNS recursor, BIND}
                 \item \textbf{Авторитативные сервера DNS} \\
                 \texttt{KNOT, CoreDNS, PowerDNS, NSD, YADIFA, BIND}
                 \item \textbf{Сервера DNS с подписью «на лету»} \\
@@ -409,6 +414,7 @@
         ~\\
         \begin{itemize}
                 \item<2-> А есть ещё DNS-over-DTLS...
+                \item<3-> ... и DNS-over-QUIC...
         \end{itemize}
 \end{frame}
 
@@ -428,7 +434,45 @@
 \begin{frame}{DNS-over-TLS (DoT). Поддержка}
         \begin{itemize}
                 \item \textbf{Клиенты} \\
-                \texttt{kdig, dig} % dig 9.17.7 17 марта 2021
+                \texttt{kdig, dig 9.17.7+} % dig 9.17.7 17 марта 2021
+                \item \textbf{Ресолверы} (могут принять) \\
+                \texttt{unbound, CoreDNS, dnsdist, KNOT Resolver}
+                \item \textbf{Ресолверы} (могут спросить) \\
+                \texttt{unbound, CoreDNS, KNOT Resolver, systemd.resolved, Android 9 Pie}
+                \item \textbf{Сервисы} \\
+                \texttt{Google DNS, Cloudflare DNS, Quad9}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNS-over-HTTPS (DoH)}
+        \begin{itemize}
+                \item<1-> Защищенным транспортом является обычный HTTP/2
+                \item<1-> Запросы/ответы -- стандартные DNS-пакеты
+                \item<1-> Формируется специальный HTTP-запрос
+                \begin{itemize}
+                        \item<1-> GET -- DNS-пакет кодируется в параметр
+                        \item<1-> POST -- DNS-пакет в \texttt{application/dns-message}
+                \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNS-over-HTTPS (DoH). Особенности}
+        \begin{itemize}
+                \item Не меняет спецификацию DNS
+                \item Требует установки HTTP/2-соединения (дорого)
+                \item Требует стартовых настроек клиента
+                \begin{itemize}
+                        \item Нет автоопределения
+                        \item Требует «бутстрапа» имени сервера % Не бывает сертификатов на IP (если вы не Cloudflare)
+                \end{itemize}
+                \item \textbf{Не сильно выделяется в HTTP-трафике}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{DNS-over-HTTPS (DoH). Поддержка}
+        \begin{itemize}
+                \item \textbf{Клиенты} \\
+                \texttt{kdig 3.0+, dig 9.17.11+} % dig 9.17.11 25 ноября 2020
                 \item \textbf{Ресолверы} (могут принять) \\
                 \texttt{unbound, CoreDNS, dnsdist, KNOT Resolver}
                 \item \textbf{Ресолверы} (могут спросить) \\
@@ -436,15 +480,6 @@
                 \item \textbf{Сервисы} \\
                 \texttt{Google DNS, Cloudflare DNS, Quad9}
         \end{itemize}
-\end{frame}
-
-\begin{frame}{DNS-over-HTTPS (DoH)}
-\end{frame}
-
-\begin{frame}{DNS-over-HTTPS (DoH). Особенности}
-\end{frame}
-
-\begin{frame}{DNS-over-HTTPS (DoH). Поддержка}
 % Added in 7.62.0
 % curl --doh-url https://cloudflare-dns.com/dns-query https://www.google.com
 
@@ -460,13 +495,22 @@
 
 \end{frame}
 
-\begin{frame}{DNS-over-QUIC (DoQ)}
-\end{frame}
-
 \begin{frame}{Минимизация QNAME}
+% Нарисовать
+% https://labs.ripe.net/media/images/fig2_2wBmhvi.width-800.png
 \end{frame}
 
-\begin{frame}{EDNS0 Client subnet}
+\begin{frame}{EDNS Client subnet}
+        Это расширение DNS
+        \begin{itemize}
+                \item Добавляет в запрос подсеть сделавшего запрос
+                \item На этом принципе у многих работает геобалансинг
+        \end{itemize}
+        Поддержка
+        \begin{itemize}
+                \item Google DNS принципиально да
+                \item Cloudflare DNS принципиально нет
+        \end{itemize}
 \end{frame}
 
 \begin{frame}{Защита DNS и ваш сервер}
@@ -568,7 +612,7 @@
 \end{frame}
 
 \begin{frame}[t]{Ссылки. Разное}
-\printbibliography[keyword={common},notkeyword={en}]
+\printbibliography[keyword={extra},notkeyword={en}]
 \end{frame}
 
 \begin{frame}[t]{Ссылки. \LaTeX }
