@@ -521,7 +521,17 @@
 \end{frame}
 
 \begin{frame}{Защита DNS и автоматизация}
-        SSHFP и ключ хоста
+        SSH Fingerprint
+        \begin{itemize}
+                \item Запись SSHFP содержит хэш публичного ключа хоста
+                \item На клиенте \emph{~/.ssh/config}: \texttt{VerifyHostKeyDNS yes}
+                \item На сервере \texttt{ssh-keygen -R `hostname`}
+                \begin{itemize}
+                        \item \small{Не надо все алгоритмы, не тяните за собой легаси}
+                \end{itemize}
+                \item Работает только с DNSSEC
+                \item \textcolor{blue}{\href{https://datatracker.ietf.org/doc/html/rfc4255}{RFC 4255}}\supercite{rfc-4255}
+        \end{itemize}
 \end{frame}
 
 \begin{frame}{Защита DNS и docker}
