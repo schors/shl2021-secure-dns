@@ -535,6 +535,7 @@
 \end{frame}
 
 \begin{frame}{Защита DNS и docker}
+% по умолчанию гугл https://github.com/moby/moby/blob/a77317882d010b884a9101c6ad0b2d7db141082f/libnetwork/resolvconf/resolvconf.go#L58
 \end{frame}
 
 \begin{frame}{Защита DNS и kubernetes}
@@ -572,18 +573,18 @@
 \begin{frame}{Реакционизм. Гоcрегулирование}
         \only<1>{Картинка с самураем и флажками/нашивками РКН/FCC/etc}
         \begin{itemize}
+                \item<5-> Давление UK ISPA % https://www.opennet.ru/opennews/art.shtml?num=51046
                 \item<2-> Большинство «госблокировок» в мире основано на DNS
                 \item<3-> НСДИ РФ не совместима с DNSSEC % в принципе не намеренно
                 \item<4-> НСДИ РФ не поддерживает защиту % а зря, буква "Б" в Роскомнадзор, ГРЧЦ, ЦМУ ССОП и НСДИ
-                \item<5-> Давление UK ISPA % https://www.opennet.ru/opennews/art.shtml?num=51046
         \end{itemize}
 \end{frame}
 
 \begin{frame}{Многое осталось за кадром}
         \begin{itemize}
                 \item EDNS(0) Padding, Cookies, etc
-                \item Обслуживание и эксплуатация DNSSEC, DoT/DoH
-                \item Применение DNSSEC: SSHFP, DANE, etc
+                \item Обслуживание и эксплуатация DNS, DNSSEC, DoT/DoH
+                \item Применение DNSSEC: DANE, etc
                 \item Обзор серверов, включая \texttt{stub-ресолверы}
                 \item Обзор клиентов и инструментов
                 \item DNS Stamps (ссылки sdna://)
