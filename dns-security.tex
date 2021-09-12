@@ -179,8 +179,8 @@
         % во время подготовки к докладу я нашел ошибку/неточность в сервере NSD
 \end{frame}
 
-\begin{frame}{Как устроен DNS}
-        здесь схемка
+\begin{frame}[t]{Как устроен DNS}%
+        \includegraphics[height=0.9\textheight]{pic1.png}
 \end{frame}
 
 \begin{frame}{Особенности классического DNS}
@@ -193,7 +193,7 @@
 \end{frame}
 
 \begin{frame}{Угорозы в системе DNS}
-        здесь схемка
+        \includegraphics[height=0.8\textheight]{pic2.png}
 \end{frame}
 
 \begin{frame}{Заложенная в DNS безопасность}
@@ -286,12 +286,17 @@
         \end{itemize}
 \end{frame}
 
-\begin{frame}{DNSSEC. Подпись зоны}
-        картинка
-\end{frame}
-
-\begin{frame}{DNSSEC. Цепочка доверия}
-        картинка
+\begin{frame}{DNSSEC. Принцип действия}
+        \begin{columns}[T,onlytextwidth]
+                \begin{column}{0.5\textwidth}<1->
+                        \textbf{Подпись зоны}
+                        \includegraphics[height=0.7\textheight]{pic3.png}
+                \end{column}
+                \begin{column}{0.5\textwidth}<2->
+                        \textbf{Цепочка доверия}
+                        \includegraphics[height=0.7\textheight]{pic4.png}
+                \end{column}
+        \end{columns}
 \end{frame}
 
 \begin{frame}{DNSSEC. Особенности}
@@ -541,7 +546,8 @@
 \begin{frame}{Защита DNS и kubernetes}
 \end{frame}
 
-% Сюда что-нибудь про настройку и облака, и вот это всё
+\begin{frame}{Как проверить ресолвер}
+\end{frame}
 
 \begin{frame}{Реакционизм. Подделка}
         \only<1>{Картинка}%
@@ -557,7 +563,7 @@
 \end{frame}
 
 \begin{frame}{Реакционизм. Прослушка}
-        \only<1>{Картинка Родина Слышит}
+        \centering\includegraphics[height=0.8\textheight]{pic6.png}<1>
         \begin{itemize}
                 \item<2-> Не позволяет анализировать DNS-запросы
                 \begin{itemize}
