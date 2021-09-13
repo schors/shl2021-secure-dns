@@ -221,7 +221,7 @@
                         \item<1-> Отравление
                         \item<1-> Взлом серверов и замена записей
                         \item<1-> Поддельные серверы, BGP-injection
-                        \item<1-> %пример про подделку
+                        \item<1-> Атака на Route53 в апреле 2018 года % https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/
                 \end{itemize}
                 \item<2-> Прослушка
                 \begin{itemize}
@@ -231,7 +231,8 @@
                         \end{itemize}
                         \item<2-> Маркетинговые исследования
                         \item<2-> Система блокировок сайтов
-                        \item<2-> % пример про прослушку и про телегу, и RFC
+                        \item<2-> RFC7626 -- 73.1\% могут быть узнаны по слепку DNS
+                        \item<2-> Использование DoH/DoT Telegram
                 \end{itemize}
         \end{itemize}
 \end{frame}
@@ -346,6 +347,7 @@
 \end{frame}
 
 \begin{frame}{DNSSEC. Поддержка}        
+СКОРЕЕ ВСЕГО ЗАМЕНЮ ОБЗОРОМ "КАК ПОСМОТРЕТЬ"
         \begin{itemize}
                 \item \textbf{Клиенты} \\
                 \texttt{dig/delv, drill, kdig}
@@ -405,8 +407,8 @@
 \end{frame}
 
 \begin{frame}{DNSCrypt. Поддержка}
+СКОРЕЕ ВСЕГО ЗАМЕНЮ ОБЗОРОМ "КАК ПОСМОТРЕТЬ"
         % dig @77.88.8.78 -p 15353 2.dnscrypt-cert.browser.yandex.net. -t TXT +short
-        А надо?
 \end{frame}
 
 \begin{frame}{DNS-over-HTTPS (Google API)}
@@ -446,6 +448,7 @@
 \end{frame}
 
 \begin{frame}{DNS-over-TLS (DoT). Поддержка}
+СКОРЕЕ ВСЕГО ЗАМЕНЮ ОБЗОРОМ "КАК ПОСМОТРЕТЬ"
         \begin{itemize}
                 \item \textbf{Клиенты} \\
                 \texttt{kdig, dig 9.17.7+} % dig 9.17.7 17 марта 2021
@@ -484,6 +487,7 @@
 \end{frame}
 
 \begin{frame}{DNS-over-HTTPS (DoH). Поддержка}
+СКОРЕЕ ВСЕГО ЗАМЕНЮ ОБЗОРОМ "КАК ПОСМОТРЕТЬ"
         \begin{itemize}
                 \item \textbf{Клиенты} \\
                 \texttt{kdig 3.0+, dig 9.17.11+} % dig 9.17.11 25 ноября 2020
@@ -510,6 +514,7 @@
 \end{frame}
 
 \begin{frame}{Минимизация QNAME}
+КАРТИНКА
 % Нарисовать
 % https://labs.ripe.net/media/images/fig2_2wBmhvi.width-800.png
 \end{frame}
@@ -550,9 +555,21 @@
 
 \begin{frame}{Защита DNS и docker}
 % по умолчанию гугл https://github.com/moby/moby/blob/a77317882d010b884a9101c6ad0b2d7db141082f/libnetwork/resolvconf/resolvconf.go#L58
+        \begin{itemize}
+                \item<1-> Никакой защиты
+                \item<2-> Docker понимает и \texttt{systemd-resolved}, и \texttt{resolve.conf}
+                \item<3-> Каждому контейнеру можно указать свои DNS
+                \item<4-> При неудаче умолчание: \textbf{8.8.8.8}
+        \end{itemize}
 \end{frame}
 
 \begin{frame}{Защита DNS и kubernetes}
+        \begin{itemize}
+                \item<1-> CoreDNS -- с ним всё хорошо
+                \item<2-> NodeLocal DNSCache настраиваем как хотим
+                \item<3-> CoreDNS не умеет проверять DNSSEC
+                \item<4-> Knot Resolver умеет
+        \end{itemize}
 \end{frame}
 
 \begin{frame}{Как проверить ресолвер}
