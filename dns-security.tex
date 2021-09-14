@@ -6,6 +6,7 @@
 \usepackage[main=russian,english]{babel}
 \defaultfontfeatures{Mapping=tex-text}
 \usepackage{listings}
+\usepackage[export]{adjustbox}
 
 \usepackage[backend=biber,bibstyle=numeric,citestyle=numeric-comp,sorting=none,defernumbers=true,date=long]{biblatex}
 \addbibresource{dns-security.bib}
@@ -180,7 +181,7 @@
 \end{frame}
 
 \begin{frame}[t]{Как устроен DNS}%
-        \includegraphics[height=0.9\textheight]{pic1.png}
+        \includegraphics[height=0.8\textheight]{pic1.png}
 \end{frame}
 
 \begin{frame}{Особенности классического DNS}
@@ -193,7 +194,7 @@
 \end{frame}
 
 \begin{frame}{Угорозы в системе DNS}
-        \includegraphics[height=0.8\textheight]{pic2.png}
+        \centering\includegraphics[height=0.75\textheight]{pic2.png}
 \end{frame}
 
 \begin{frame}{Заложенная в DNS безопасность}
@@ -214,24 +215,32 @@
 
 % https://www.trendmicro.com/vinfo/us/security/news/cyber-attacks/hacked-or-spoofed-digging-into-the-malaysia-airlines-website-compromise
 
-\begin{frame}{Основные проблемы}
+\begin{frame}{Основные проблемы. Подделка}
         \begin{itemize}
-                \item<1-> Подделка
+                \item<1-> Отравление
+                \item<1-> Подмена
+                \item<1-> Взлом серверов и замена записей
+                \item<1-> Поддельные серверы, BGP-injection
                 \begin{itemize}
-                        \item<1-> Отравление
-                        \item<1-> Взлом серверов и замена записей
-                        \item<1-> Поддельные серверы, BGP-injection
-                        \item<1-> Атака на Route53 в апреле 2018 года % https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/
+                        \item<2-> Атака на Route53 в апреле 2018 года % https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/
                 \end{itemize}
-                \item<2-> Прослушка
+                \item<3-> Госрегулирование
                 \begin{itemize}
-                        \item<2-> Шпионаж и промышленный шпионаж
-                        \begin{itemize}
-                                \item<2-> ... с использованием госрегулирования
-                        \end{itemize}
-                        \item<2-> Маркетинговые исследования
-                        \item<2-> Система блокировок сайтов
-                        \item<2-> RFC7626 -- 73.1\% могут быть узнаны по слепку DNS
+                        \item<3-> Блокировка сайтов в Европе и России
+                \end{itemize}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Основные проблемы. Прослушка}
+        \begin{itemize}
+                \item<1-> Маркетинговые исследования
+                \item<1-> Шпионаж и промышленный шпионаж
+                \begin{itemize}
+                        \item<2-> ... с использованием госрегулирования
+                \end{itemize}
+                \item<1-> RFC7626 -- 73.1\% могут быть узнаны по слепку DNS
+                \item<2-> Госрегулирование
+                \begin{itemize}
                         \item<2-> Использование DoH/DoT Telegram
                 \end{itemize}
         \end{itemize}
@@ -360,6 +369,20 @@
         \end{itemize}
 \end{frame}
 
+\begin{frame}{DNSSEC. Пример использования}
+        SSH Fingerprint
+        \begin{itemize}
+                \item Запись SSHFP содержит хэш публичного ключа хоста
+                \item На клиенте \emph{~/.ssh/config}: \texttt{VerifyHostKeyDNS yes}
+                \item На сервере \texttt{ssh-keygen -R `hostname`}
+                \begin{itemize}
+                        \item \small{Не надо все алгоритмы, не тяните за собой легаси}
+                \end{itemize}
+                \item Работает только с DNSSEC
+                \item \textcolor{blue}{\href{https://datatracker.ietf.org/doc/html/rfc4255}{RFC 4255}}\supercite{rfc-4255}
+        \end{itemize}
+\end{frame}
+
 % DoT autodiscover https://knot-resolver.readthedocs.io/en/stable/modules-experimental_dot_auth.html
 % Великобритания https://www.opennet.ru/opennews/art.shtml?num=51046
 
@@ -402,6 +425,7 @@
                 \item Нет ни RFC, ни Draft. Только спецификация на сайте
                 \item Имеет заметную программную поддержку
                 \item Не предусмотрена замена мастер-ключа
+                \item Две фазы
                 \item Не «взлетел»
         \end{itemize}
 \end{frame}
@@ -539,20 +563,6 @@
         \end{itemize}
 \end{frame}
 
-\begin{frame}{Защита DNS и автоматизация}
-        SSH Fingerprint
-        \begin{itemize}
-                \item Запись SSHFP содержит хэш публичного ключа хоста
-                \item На клиенте \emph{~/.ssh/config}: \texttt{VerifyHostKeyDNS yes}
-                \item На сервере \texttt{ssh-keygen -R `hostname`}
-                \begin{itemize}
-                        \item \small{Не надо все алгоритмы, не тяните за собой легаси}
-                \end{itemize}
-                \item Работает только с DNSSEC
-                \item \textcolor{blue}{\href{https://datatracker.ietf.org/doc/html/rfc4255}{RFC 4255}}\supercite{rfc-4255}
-        \end{itemize}
-\end{frame}
-
 \begin{frame}{Защита DNS и docker}
 % по умолчанию гугл https://github.com/moby/moby/blob/a77317882d010b884a9101c6ad0b2d7db141082f/libnetwork/resolvconf/resolvconf.go#L58
         \begin{itemize}
@@ -605,17 +615,32 @@
 \begin{frame}{Реакционизм. Гоcрегулирование}
         \only<1>{Картинка с самураем и флажками/нашивками РКН/FCC/etc}
         \begin{itemize}
-                \item<5-> Давление UK ISPA % https://www.opennet.ru/opennews/art.shtml?num=51046
-                \item<2-> Большинство «госблокировок» в мире основано на DNS
-                \item<3-> НСДИ РФ не совместима с DNSSEC % в принципе не намеренно
+                \item<2-> Давление UK ISPA % https://www.opennet.ru/opennews/art.shtml?num=51046
+                \item<3-> Большинство «госблокировок» в мире основано на манипуляциях с DNS
+                \item<4-> НСДИ РФ не совместима с DNSSEC % в принципе не намеренно
                 \item<4-> НСДИ РФ не поддерживает защиту % а зря, буква "Б" в Роскомнадзор, ГРЧЦ, ЦМУ ССОП и НСДИ
         \end{itemize}
+\end{frame}
+
+\begin{frame}{Госрегулирование. НСДИ}
+        \begin{itemize}
+                \item Государственный публичный DNS
+                \item Дублирует \textbf{.} (корень)
+                \item Уменьшает ущерб от манипуляций с \textbf{\texttt{.RU}} \\
+                {\small гипотетических, со стороны США в лице ICANN}
+                \item НСДИ обслуживается ЦМУ ССОП
+                \item Предоставляется в том числе AXFR
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Безопасность заложенная в НСДИ}
+        \includegraphics[height=0.5\textheight,center]{travolta.png}<2->
 \end{frame}
 
 \begin{frame}{Многое осталось за кадром}
         \begin{itemize}
                 \item EDNS(0) Padding, Cookies, etc
-                \item Обслуживание и эксплуатация DNS, DNSSEC, DoT/DoH
+                \item Обслуживание DNS, DNSSEC, DoT/DoH
                 \item Применение DNSSEC: DANE, etc
                 \item Обзор серверов, включая \texttt{stub-ресолверы}
                 \item Обзор клиентов и инструментов
