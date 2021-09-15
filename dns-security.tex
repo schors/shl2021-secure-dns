@@ -140,11 +140,32 @@
 \titlepage
 \end{frame}
 
-\begin{frame}{Откиньтесь на спинку кресла}
-        Пока я тут болтаю, вы можете поставить вот такие вот программы
+\begin{frame}[fragile]{Откиньтесь на спинку кресла}
+        \begin{columns}[T,onlytextwidth]
+                \begin{column}{0.56\textwidth}
+                        Knot 3.0+
+                        \begin{lstlisting}
+ppa:cz.nic-labs/knot-dns-latest
+knot-dnsutils
+
+copr @cznic/knot-dns-latest
+knot-utils \end{lstlisting}
+                \end{column}
+                \begin{column}{0.40\textwidth}
+                        ISC BIND 9.17.11+
+                        \begin{lstlisting}
+ppa:isc/bind-dev
+bind9-dnsutils
+
+copr isc/bind-dev
+isc-bind-bind-utils\end{lstlisting}
+                \end{column}
+        \end{columns}
+        \begin{lstlisting}
+docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item Эта презентация сделана с помощью \LaTeX
-                \item Тема DNS очень специфична % мало кто лезет под капот, а кто лезет - быстро забывает %\item Я сделаю акцент на эксплуатацию сервисов
+                %\item Тема DNS очень специфична % мало кто лезет под капот, а кто лезет - быстро забывает %\item Я сделаю акцент на эксплуатацию сервисов
                 \item Я расскажу страшную сказку
         \end{itemize}
 \end{frame}
@@ -548,10 +569,9 @@
 
 \end{frame}
 
-\begin{frame}{Минимизация QNAME}
-КАРТИНКА
-% Нарисовать
 % https://labs.ripe.net/media/images/fig2_2wBmhvi.width-800.png
+\begin{frame}{Минимизация QNAME}
+        \centering\includegraphics[height=0.7\textheight]{qname.png}
 \end{frame}
 
 \begin{frame}[fragile]{EDNS Client subnet}
@@ -614,7 +634,7 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
 \end{frame}
 
 \begin{frame}{Реакционизм. Прослушка} % претензии к защите
-        \centering\includegraphics[height=0.8\textheight]{pic6.png}<1>
+        \centering\vskip0.5cm\includegraphics[height=0.7\textheight]{rodina.jpg}<1>
         \begin{itemize}
                 \item<2-> Не позволяет анализировать DNS-запросы
                 \begin{itemize}
