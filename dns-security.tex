@@ -44,15 +44,15 @@
         showtabs=false,
         tabsize=4,
         frame=single,
-        basicstyle=\fontsize{10pt}{12}\ttfamily\color{sbase00},
+        basicstyle=\fontsize{12pt}{12}\ttfamily\color{sbase03},
         backgroundcolor=\color{sbase3},
-        keywordstyle=\color{scyan},
-        commentstyle=\color{sbase1},
-        stringstyle=\color{sblue},
-        numberstyle=\color{sviolet},
-        identifierstyle=\color{sbase00},
-        rulecolor=\color{sbase1},
-        framerule=1pt
+%        keywordstyle=\color{scyan},
+%        commentstyle=\color{sbase1},
+%        stringstyle=\color{sblue},
+%        numberstyle=\color{sviolet},
+%        identifierstyle=\color{sbase00},
+%        rulecolor=\color{sbase1},
+        framerule=0pt
 }
 
 \lstdefinelanguage{nginx}{
@@ -141,12 +141,12 @@
 \end{frame}
 
 \begin{frame}{Откиньтесь на спинку кресла}
+        Пока я тут болтаю, вы можете поставить вот такие вот программы
         \begin{itemize}
                 \item Эта презентация сделана с помощью \LaTeX
-                \item Я расскажу страшную сказку
                 \item Тема DNS очень специфична % мало кто лезет под капот, а кто лезет - быстро забывает %\item Я сделаю акцент на эксплуатацию сервисов
+                \item Я расскажу страшную сказку
         \end{itemize}
-        Пока я тут болтаю, вы можете поставить вот такие вот программы
 \end{frame}
 
 \begin{frame}{DNS --- всему голова}
@@ -245,7 +245,7 @@
                 \begin{itemize}
                         \item<2-> ... с использованием госрегулирования
                 \end{itemize}
-                \item<1-> RFC7626 -- 73.1\% могут быть узнаны по слепку DNS
+                \item<1-> RFC7626 --- 73.1\% могут быть узнаны по слепку DNS
                 \item<2-> Госрегулирование
                 \begin{itemize}
                         \item<2-> Использование DoH/DoT Telegram
@@ -254,6 +254,7 @@
 \end{frame}
 
 \begin{frame}{А так ли страшен чёрт?}
+        \centering\vskip0.5cm\includegraphics[height=0.7\textheight]{monster.jpg}<1>
         \begin{itemize}
                 \item<2-> DNS-уязвимости не самоцель, часто нужны условия
                 \item<3-> Однако DNS никогда не в одиночестве
@@ -394,18 +395,21 @@
 % Великобритания https://www.opennet.ru/opennews/art.shtml?num=51046
 
 \begin{frame}{Защита от прослушки DNS}
-        \onslide<1-> Шифрование канала
+        \onslide<1-> Шифрование сообщений
         \begin{itemize}
-                \item<2->DNSCrypt
-                \item<3->DNS-over-HTTPS Google API
-                \item<4->DNS-over-TLS
-                \item<4->DNS-over-HTTP/2
-                \item<4->DNS-over-QUIC
+                \item<1->DNSCrypt
         \end{itemize}
-        \onslide<5-> Алгоритмы и фильтры
+        \onslide<2-> Защишенный транспорт
         \begin{itemize}
-                \item<6->Минимизация QNAME при запросах
-                \item<7->EDNS0 Client subnets
+                \item<2->DNS-over-HTTPS Google API
+                \item<2->DNS-over-TLS
+                \item<2->DNS-over-HTTP/2
+                \item<2->DNS-over-QUIC
+        \end{itemize}
+        \onslide<3-> Прочее
+        \begin{itemize}
+                \item<3->Минимизация QNAME при запросах
+                \item<3->EDNS0 Client subnets
         \end{itemize}
 \end{frame}
 
@@ -495,11 +499,11 @@
 \begin{frame}{DNS-over-HTTPS (DoH)}
         \begin{itemize}
                 \item<1-> Защищенным транспортом является обычный HTTP/2
-                \item<1-> Запросы/ответы -- стандартные DNS-пакеты
+                \item<1-> Запросы/ответы --- стандартные DNS-пакеты
                 \item<1-> Формируется специальный HTTP-запрос
                 \begin{itemize}
-                        \item<1-> GET -- DNS-пакет кодируется в параметр
-                        \item<1-> POST -- DNS-пакет в \texttt{application/dns-message}
+                        \item<1-> GET --- DNS-пакет кодируется в параметр
+                        \item<1-> POST --- DNS-пакет в \texttt{application/dns-message}
                 \end{itemize}
         \end{itemize}
 \end{frame}
@@ -550,16 +554,20 @@
 % https://labs.ripe.net/media/images/fig2_2wBmhvi.width-800.png
 \end{frame}
 
-\begin{frame}{EDNS Client subnet}
+\begin{frame}[fragile]{EDNS Client subnet}
         Это расширение DNS
         \begin{itemize}
-                \item Добавляет в запрос подсеть сделавшего запрос
-                \item На этом принципе у многих работает геобалансинг
+                \item<1-> Добавляет в запрос подсеть клиента
+                \item<1-> Например, для геобалансига
         \end{itemize}
         Поддержка
         \begin{itemize}
-                \item Google DNS принципиально да
-                \item Cloudflare DNS принципиально нет
+                \item<1-> Google DNS принципиально \textbf{да}
+                \item[]<2-> \begin{lstlisting}
+dig +short @8.8.8.8 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
+                \item<1-> Cloudflare DNS принципиально \textbf{нет}
+                \item[]<2-> \begin{lstlisting}
+dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
         \end{itemize}
 \end{frame}
 
@@ -582,7 +590,7 @@
 
 \begin{frame}{Защита DNS и kubernetes}
         \begin{itemize}
-                \item<1-> CoreDNS -- с ним всё хорошо
+                \item<1-> CoreDNS --- с ним всё хорошо
                 \item<2-> NodeLocal DNSCache настраиваем как хотим
                 \item<3-> CoreDNS не умеет проверять DNSSEC
                 \item<4-> Knot Resolver умеет
@@ -592,7 +600,7 @@
 \begin{frame}{Как проверить ресолвер}
 \end{frame}
 
-\begin{frame}{Реакционизм. Подделка}
+\begin{frame}{Реакционизм. Подделка} % претензии к защите
         \only<1>{Картинка}%
         \onslide<2->
         \begin{itemize}
@@ -605,7 +613,7 @@
         \end{itemize}
 \end{frame}
 
-\begin{frame}{Реакционизм. Прослушка}
+\begin{frame}{Реакционизм. Прослушка} % претензии к защите
         \centering\includegraphics[height=0.8\textheight]{pic6.png}<1>
         \begin{itemize}
                 \item<2-> Не позволяет анализировать DNS-запросы
@@ -619,7 +627,7 @@
         \end{itemize}
 \end{frame}
 
-\begin{frame}{Реакционизм. Гоcрегулирование}
+\begin{frame}{Реакционизм. Гоcрегулирование} % претензии к защите 
         \only<1>{Картинка с самураем и флажками/нашивками РКН/FCC/etc}
         \begin{itemize}
                 \item<2-> Давление UK ISPA % https://www.opennet.ru/opennews/art.shtml?num=51046
