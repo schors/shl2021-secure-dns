@@ -221,7 +221,7 @@ docker cznic/knot:latest \end{lstlisting}
         \centering\includegraphics[height=0.75\textheight]{pic2.png}
 \end{frame}
 
-\begin{frame}{Заложенная в DNS безопасность}
+\begin{frame}[label=threats]{Заложенная в DNS безопасность}
         \onslide<2->{``... действия, которые с современной точки зрения могут показаться неправильными или ошибочными,
         часто оказывались естественным следствием господствовавшего в те времена понимания тех или иных вещей, а
         также ограниченности доступных ресурсов.``}
@@ -434,9 +434,9 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item Не меняет спецификацию DNS
                 \item Нет ни RFC, ни Draft. Только спецификация на сайте
-                \item Имеет заметную программную поддержку
                 \item Не предусмотрена замена мастер-ключа
-                \item Две фазы
+                \item Заметное количество программ
+                \item \textbf{Нет автообнаружения}
                 \item Не «взлетел»
         \end{itemize}
 \end{frame}
@@ -460,7 +460,7 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item<1-> Устанавливается защищенное TLS-соединение (порт 853)
                 \item<1-> Внутри соединения – стандартный DNS протокол
-                \item<1-> {\small Самая простая инсталяция – проксирование \texttt{nginx} через \texttt{ngx\_stream\_ssl\_module} на обычный DNS}
+                \item<1-> {\small Самая простая инсталляция – проксирование \texttt{nginx} через \texttt{ngx\_stream\_ssl\_module} на обычный DNS}
         \end{itemize}
         ~\\
         \begin{itemize}
@@ -473,11 +473,9 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item Не меняет спецификацию DNS
                 \item Требует установки TLS-соединения (дорого)
-                \item Требует стартовых настроек клиента
-                \begin{itemize}
-                        \item Нет автоопределения
-                        \item Требует «бутстрапа» имени сервера % Не бывает сертификатов на IP (если вы не Cloudflare)
-                \end{itemize}
+                \item Требует стартовых настроек клиента \\
+                {\small требует «бутстрапа» имени сервера} % Не бывает сертификатов на IP (если вы не Cloudflare)
+                \item \textbf{Нет автообнаружения}
                 \item Специальный 853 порт
         \end{itemize}
 \end{frame}
@@ -512,11 +510,9 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item Не меняет спецификацию DNS
                 \item Требует установки HTTP/2-соединения (дорого)
-                \item Требует стартовых настроек клиента
-                \begin{itemize}
-                        \item Нет автоопределения
-                        \item Требует «бутстрапа» имени сервера % Не бывает сертификатов на IP (если вы не Cloudflare)
-                \end{itemize}
+                \item Требует стартовых настроек клиента \\
+                {\small требует «бутстрапа» имени сервера} % Не бывает сертификатов на IP (если вы не Cloudflare)
+                \item \textbf{Нет автообнаружения}
                 \item \textbf{Не сильно выделяется в HTTP-трафике}
         \end{itemize}
 \end{frame}
@@ -548,6 +544,15 @@ docker cznic/knot:latest \end{lstlisting}
 
 \end{frame}
 
+\begin{frame}{Защита канала. Ложка дегтя}
+% Нет защиты обращения к авторитативным серверам
+\end{frame}
+
+\againframe{threats}
+
+% Experimental DNS-over-TLS Auto-discovery
+% https://github.com/CZ-NIC/knot-resolver/tree/c8cb9740f8ebd34219c7d860106969fcbb6c7bf6/modules/experimental_dot_auth
+
 % https://labs.ripe.net/media/images/fig2_2wBmhvi.width-800.png
 \begin{frame}{Минимизация QNAME}
         \centering\includegraphics[height=0.7\textheight]{qname.png}
@@ -567,13 +572,6 @@ dig +short @8.8.8.8 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
                 \item<1-> Cloudflare DNS принципиально \textbf{нет}
                 \item[]<2-> \begin{lstlisting}
 dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
-        \end{itemize}
-\end{frame}
-
-\begin{frame}{Защита DNS и ваш сервер}
-        \begin{itemize}
-                \item systemd-resolved
-                \item unbound или knot-resolver
         \end{itemize}
 \end{frame}
 
