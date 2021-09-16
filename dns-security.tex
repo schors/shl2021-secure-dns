@@ -165,8 +165,11 @@ isc-bind-bind-utils\end{lstlisting}
 docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item Эта презентация сделана с помощью \LaTeX
-                %\item Тема DNS очень специфична % мало кто лезет под капот, а кто лезет - быстро забывает %\item Я сделаю акцент на эксплуатацию сервисов
-                \item Я расскажу страшную сказку
+                % я 20 лет занимался хостингом и DNS был моим хобби.
+                % мы в разработке довольно мало уделяем внимание деталям работы DNS (и это нормально). 
+                % я считаю, что это немного легкомысленным.
+                % я расскажу о имеющихся способах защиты и их применения
+                \item Я расскажу страшную сказку про DNS
         \end{itemize}
 \end{frame}
 
@@ -222,7 +225,7 @@ docker cznic/knot:latest \end{lstlisting}
         \onslide<2->{``... действия, которые с современной точки зрения могут показаться неправильными или ошибочными,
         часто оказывались естественным следствием господствовавшего в те времена понимания тех или иных вещей, а
         также ограниченности доступных ресурсов.``}
-        \onslide<3-> \rightline{{\rm --- Брайан Керниган}}\supercite{unix-memoir}
+        \onslide<2-> \rightline{{\rm --- Брайан Керниган}}\supercite{unix-memoir}
 \end{frame}
 
 % завидую хакерам 80-ых и 90-ых - халява
@@ -261,7 +264,8 @@ docker cznic/knot:latest \end{lstlisting}
 
 \begin{frame}{Основные проблемы. Прослушка}
         \begin{itemize}
-                \item<1-> Маркетинговые исследования
+                \item<1-> Реклама, сбор статистики, что-то ещё \supercite{dns-hijacking}\\
+                {\small \textcolor{blue}{\href{https://en.wikipedia.org/wiki/DNS\_hijacking\#Manipulation\_by\_ISPs}{https://en.wikipedia.org/wiki/DNS\_hijacking\#Manipulation\_by\_ISPs}}}
                 \item<1-> Шпионаж и промышленный шпионаж
                 \begin{itemize}
                         \item<2-> ... с использованием госрегулирования
@@ -313,9 +317,8 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item Не меняет саму спецификацию DNS
                 \item Основан на вере в целостность системы
-                \item Зависит от источника ответа
+                \item \textbf{Зависит от источника ответа}
                 \item Внедрение практически отсутствует
-                \item Шифрование на основе ED25519 % кривые Эдвардса
         \end{itemize}
 \end{frame}
 
@@ -346,58 +349,43 @@ docker cznic/knot:latest \end{lstlisting}
         \end{columns}
 \end{frame}
 
+\begin{frame}{DNSSEC. Настройка клиентов} % выбор в зависимости от доверия и цели
+        \begin{itemize}
+                \item Прозрачная проверка\\
+                {\small Потребитель получает фильтрованные ответы } % основной вариант использования
+                \item Явная проверка\\
+                {\small Потребитель явно указывает ресолверу, что хочет получить проверенный результат. Проверяет флаги ответа }
+                \item Усиленная проверка\\
+                {\small Потребитель проверяет подписи сам } % для использования расширений это основной вариант
+        \end{itemize}
+\end{frame}
+
 \begin{frame}{DNSSEC. Особенности}
         \begin{itemize}
                 \item \textbf{Источник ответа не важен}
                 \item Требует аккуратности и непрерывного обслуживания даже в статическом состоянии
                 \item Сложные реализации «отрицательного ответа»
                 \item Большой размер ответа
-                \item Возможность использования «устаревших» ответов % в рамках срока действия подписи
                 \item Крайне слабая глубина внедрения
+                \item \textbf{Это единственный вариант в этой категории} % нет никаких других защит от подделки
         \end{itemize}
 \end{frame}
 
-\begin{frame}{DNSSEC. Варианты использования}
+\begin{frame}{DNSSEC. Must have}
         \begin{itemize}
-                \item Прозрачная проверка\\
-                {\small Потребитель получает фильтрованные ответы }
-                \item Явная проверка\\
-                {\small Потребитель явно указывает ресолверу, что хочет получить проверенный результат. Проверяет флаги ответа }
-                \item Усиленная проверка\\
-                {\small Потребитель проверяет подписи сам }
-        \end{itemize}
-\end{frame}
-
-\begin{frame}{DNSSEC. Тренды}
-        \begin{itemize}
-                \item Алгоритм ECDSA
+                \item<1-> Подпишите свои домены
                 \begin{itemize}
-                        \item скорость
-                        \item небольшой размер ответов по сравнению с RSA
+                        \item<1-> CoreDNS имеет отличную реализацию DNSSEC
                 \end{itemize}
-                \item Подпись «на лету»
+                \item<2-> Настройте ваши ресолверы на проверку DNSSEC
                 \begin{itemize}
-                        \item использование «белой лжи» \supercite{dnssec-wl}
-                        \item использование «чёрной лжи» \supercite{dnssec-bl}
+                        \item<2-> CoreDNS не умеет проверять DNSSEC
+                        \item<2-> \texttt{systemd-resolved, unbound, Knot Resolver} --- умеют
                 \end{itemize}
         \end{itemize}
 \end{frame}
 
-\begin{frame}{DNSSEC. Поддержка}        
-СКОРЕЕ ВСЕГО ЗАМЕНЮ ОБЗОРОМ "КАК ПОСМОТРЕТЬ"
-        \begin{itemize}
-                \item \textbf{Клиенты} \\
-                \texttt{dig/delv, drill, kdig}
-                \item \textbf{Ресолверы} \\
-                \texttt{systemd-resolved, dnsmask, unbound, KNOT Resolver, CoreDNS, PowerDNS recursor, BIND}
-                \item \textbf{Авторитативные сервера DNS} \\
-                \texttt{KNOT, CoreDNS, PowerDNS, NSD, YADIFA, BIND}
-                \item \textbf{Сервера DNS с подписью «на лету»} \\
-                \texttt{KNOT, CoreDNS, PowerDNS (частично)}
-        \end{itemize}
-\end{frame}
-
-\begin{frame}{DNSSEC. Пример использования}
+\begin{frame}{DNSSEC. Вкусняшка SSHFP}
         SSH Fingerprint
         \begin{itemize}
                 \item Запись SSHFP содержит хэш публичного ключа хоста
@@ -419,7 +407,7 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item<1->DNSCrypt
         \end{itemize}
-        \onslide<2-> Защишенный транспорт
+        \onslide<2-> Защишенный канал
         \begin{itemize}
                 \item<2->DNS-over-HTTPS Google API
                 \item<2->DNS-over-TLS
@@ -430,14 +418,6 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item<3->Минимизация QNAME при запросах
                 \item<3->EDNS0 Client subnets
-        \end{itemize}
-\end{frame}
-
-\begin{frame}{Шифрование канала}
-        Защита канала сводится к двум задачам:
-        \begin{itemize}
-                \item Аутентификация ресолвера
-                \item Защита обмена между потребителем и ресолвером
         \end{itemize}
 \end{frame}
 
