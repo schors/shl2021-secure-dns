@@ -221,7 +221,7 @@ docker cznic/knot:latest \end{lstlisting}
         \centering\includegraphics[height=0.75\textheight]{pic2.png}
 \end{frame}
 
-\begin{frame}[label=threats]{Заложенная в DNS безопасность}
+\begin{frame}{Заложенная в DNS безопасность}
         \onslide<2->{``... действия, которые с современной точки зрения могут показаться неправильными или ошибочными,
         часто оказывались естественным следствием господствовавшего в те времена понимания тех или иных вещей, а
         также ограниченности доступных ресурсов.``}
@@ -248,16 +248,16 @@ docker cznic/knot:latest \end{lstlisting}
 
 \begin{frame}[fragile]{Основные проблемы. Подделка}
         \begin{itemize}
-                \item<1-> Отравление, подмена
-                \item<1-> Взлом серверов и замена записей
-                \item<1-> Поддельные серверы, BGP-injection
+                \item Отравление, подмена
+                \item Взлом серверов и замена записей
+                \item Поддельные серверы, BGP-injection
                 \begin{itemize}
-                        \item<2-> Атака на Route53 в апреле 2018 года \supercite{route53-bgp-hijacking} \\ % https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/
+                        \item Атака на Route53 в апреле 2018 года \supercite{route53-bgp-hijacking} \\ % https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/
                         {\small \textcolor{blue}{\href{https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/}{www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/}}}
                 \end{itemize}
-                \item<3-> Госрегулирование
+                \item Госрегулирование
                 \begin{itemize}
-                        \item<3-> Блокировка сайтов в Европе и России
+                        \item Блокировка сайтов в Европе и России
                         \begin{lstlisting}
 dig +short @a.res-nsdi.ru. rutracker.org A \end{lstlisting}
                 \end{itemize}
@@ -437,7 +437,8 @@ delv @8.8.8.8 dxdt.ru A\end{lstlisting}
                 \item Запросы к серверу, идентичные DNSCurve
         \end{itemize}
 \begin{lstlisting}[basicstyle=\fontsize{10pt}{10}\ttfamily\color{sbase03}]
-dig @77.88.8.78 -p 15353 2.dnscrypt-cert.browser.yandex.net. -t TXT +short\end{lstlisting}
+dig @77.88.8.78 -p 15353 2.dnscrypt-cert.browser.yandex.net. \
+        -t TXT +short\end{lstlisting}
 \end{frame}
 
 \begin{frame}{DNSCrypt. Особенности}
@@ -474,6 +475,7 @@ curl -H 'accept: application/dns-json' \
         \end{itemize}
         \begin{lstlisting}
 kdig +tls @8.8.8.8 highload.ru # попробуйте 195.208.4.1
+
 dig +tls @1.1.1.1 highload.ru\end{lstlisting}
         \begin{itemize}
                 \item<2-> А есть ещё DNS-over-DTLS...
@@ -504,6 +506,7 @@ dig +tls @1.1.1.1 highload.ru\end{lstlisting}
         \end{itemize}
         \begin{lstlisting}
 kdig +https @8.8.8.8 highload.ru # попробуйте 195.208.4.1
+
 dig +https @1.1.1.1 highload.ru\end{lstlisting}
 \end{frame}
 
@@ -545,12 +548,9 @@ dig +https @1.1.1.1 highload.ru\end{lstlisting}
         \end{itemize}
 \end{frame}
 
-
-\begin{frame}{Защита канала. Ложка дегтя}
+%\begin{frame}{Защита канала. Ложка дегтя}
 % Нет защиты обращения к авторитативным серверам
-\end{frame}
-
-\againframe{threats}
+%\end{frame}
 
 % Experimental DNS-over-TLS Auto-discovery
 % https://github.com/CZ-NIC/knot-resolver/tree/c8cb9740f8ebd34219c7d860106969fcbb6c7bf6/modules/experimental_dot_auth
@@ -577,8 +577,8 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
         \end{itemize}
 \end{frame}
 
-\begin{frame}{Как проверить ресолвер}
-\end{frame}
+%\begin{frame}{Как проверить ресолвер}
+%\end{frame}
 
 \begin{frame}{Реакционизм. Подделка} % претензии к защите
         \only<1>{Картинка}%
@@ -613,6 +613,10 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
                 \small{\textcolor{blue}{\href{https://www.opennet.ru/opennews/art.shtml?num=51046}{www.opennet.ru/opennews/art.shtml?num=51046}}}
                 \item Большинство «госблокировок» в мире основано на манипуляциях с DNS
         \end{itemize}
+\end{frame}
+
+\begin{frame}{А так ли страшен чёрт?}
+        \centering\vskip0.5cm\includegraphics[height=0.7\textheight]{monster.jpg}
 \end{frame}
 
 \begin{frame}{Госрегулирование РФ. НСДИ}
