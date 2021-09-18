@@ -246,18 +246,20 @@ docker cznic/knot:latest \end{lstlisting}
         \end{itemize}
 \end{frame}
 
-\begin{frame}{Основные проблемы. Подделка}
+\begin{frame}[fragile]{Основные проблемы. Подделка}
         \begin{itemize}
-                \item<1-> Отравление
-                \item<1-> Подмена
+                \item<1-> Отравление, подмена
                 \item<1-> Взлом серверов и замена записей
                 \item<1-> Поддельные серверы, BGP-injection
                 \begin{itemize}
-                        \item<2-> Атака на Route53 в апреле 2018 года % https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/
+                        \item<2-> Атака на Route53 в апреле 2018 года \supercite{route53-bgp-hijacking} \\ % https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/
+                        {\small \textcolor{blue}{\href{https://www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/}{www.internetsociety.org/blog/2018/04/amazons-route-53-bgp-hijack/}}}
                 \end{itemize}
                 \item<3-> Госрегулирование
                 \begin{itemize}
                         \item<3-> Блокировка сайтов в Европе и России
+                        \begin{lstlisting}
+dig +short @a.res-nsdi.ru. rutracker.org A \end{lstlisting}
                 \end{itemize}
         \end{itemize}
 \end{frame}
@@ -265,15 +267,16 @@ docker cznic/knot:latest \end{lstlisting}
 \begin{frame}{Основные проблемы. Прослушка}
         \begin{itemize}
                 \item<1-> Реклама, сбор статистики, что-то ещё \supercite{dns-hijacking}\\
-                {\small \textcolor{blue}{\href{https://en.wikipedia.org/wiki/DNS\_hijacking\#Manipulation\_by\_ISPs}{https://en.wikipedia.org/wiki/DNS\_hijacking\#Manipulation\_by\_ISPs}}}
+                {\small \textcolor{blue}{\href{https://en.wikipedia.org/wiki/DNS\_hijacking\#Manipulation\_by\_ISPs}{en.wikipedia.org/wiki/DNS\_hijacking\#Manipulation\_by\_ISPs}}}
                 \item<1-> Шпионаж и промышленный шпионаж
                 \begin{itemize}
                         \item<2-> ... с использованием госрегулирования
                 \end{itemize}
-                \item<1-> RFC7626 --- 73.1\% могут быть узнаны по слепку DNS
+                \item<1-> RFC7626 --- 73.1\% могут быть узнаны по слепку DNS \supercite{rfc-7816}
                 \item<2-> Госрегулирование
                 \begin{itemize}
-                        \item<2-> Использование DoH/DoT Telegram
+                        \item<2-> Помощь в оперативной блокировке \supercite{mt-free-pre-block}\\
+                        {\small \textcolor{blue}{\href{https://usher2.club/articles/mt-free-pre-block/}{usher2.club/articles/mt-free-pre-block/}}}
                 \end{itemize}
         \end{itemize}
 \end{frame}
@@ -350,7 +353,7 @@ docker cznic/knot:latest \end{lstlisting}
         \end{columns}
 \end{frame}
 
-\begin{frame}{DNSSEC. Настройка клиентов} % выбор в зависимости от доверия и цели
+\begin{frame}[fragile]{DNSSEC. Настройка клиентов} % выбор в зависимости от доверия и цели
         \begin{itemize}
                 \item Прозрачная проверка\\
                 {\small Потребитель получает фильтрованные ответы } % основной вариант использования
@@ -359,6 +362,8 @@ docker cznic/knot:latest \end{lstlisting}
                 \item Усиленная проверка\\
                 {\small Потребитель проверяет подписи сам } % для использования расширений это основной вариант
         \end{itemize}
+        \begin{lstlisting}
+delv @8.8.8.8 dxdt.ru A\end{lstlisting}
 \end{frame}
 
 \begin{frame}{DNSSEC. Особенности}
@@ -378,7 +383,7 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item<1-> Подпишите свои домены
                 \begin{itemize}
-                        \item<1-> CoreDNS имеет отличную реализацию DNSSEC
+                        \item<1-> CoreDNS и Knot DNS - отличные реализации
                 \end{itemize}
                 \item<2-> Настройте ваши ресолверы на проверку DNSSEC
                 \begin{itemize}
@@ -424,13 +429,15 @@ docker cznic/knot:latest \end{lstlisting}
         \end{itemize}
 \end{frame}
 
-\begin{frame}{DNSCrypt}
+\begin{frame}[fragile]{DNSCrypt}
         Принцип действия
         \begin{itemize}
                 \item Настройка мастер-ключа и имени сервера
                 \item Получение «короткого» ключа и сертификата
                 \item Запросы к серверу, идентичные DNSCurve
         \end{itemize}
+\begin{lstlisting}[basicstyle=\fontsize{10pt}{10}\ttfamily\color{sbase03}]
+dig @77.88.8.78 -p 15353 2.dnscrypt-cert.browser.yandex.net. -t TXT +short\end{lstlisting}
 \end{frame}
 
 \begin{frame}{DNSCrypt. Особенности}
@@ -444,28 +451,30 @@ docker cznic/knot:latest \end{lstlisting}
         \end{itemize}
 \end{frame}
 
-\begin{frame}{DNSCrypt. Поддержка}
-СКОРЕЕ ВСЕГО ЗАМЕНЮ ОБЗОРОМ "КАК ПОСМОТРЕТЬ"
-        % dig @77.88.8.78 -p 15353 2.dnscrypt-cert.browser.yandex.net. -t TXT +short
-\end{frame}
-
-\begin{frame}{DNS-over-HTTPS (Google API)}
+\begin{frame}[fragile]{DNS-over-HTTPS (Google API)}
         Google предоставляет JSON-API к DNS\\
         Страница с описанием:\\
         \small{\textcolor{blue}{\href{https://developers.google.com/speed/public-dns/docs/dns-over-https}{https://developers.google.com/speed/public-dns/docs/dns-over-https}}}
         ~\\
         Массово используется для веб-приложений
-        % curl -H 'accept: application/dns-json' 'https://cloudflare-dns.com/dns-query?name=example.com&type=A' | jq .
+        \begin{lstlisting}[basicstyle=\fontsize{10pt}{10}\ttfamily\color{sbase03}]
+curl -H 'accept: application/dns-json' \
+  'https://dns.google/resolve?name=example.com' | jq
+
+curl -H 'accept: application/dns-json' \
+  'https://cloudflare-dns.com/dns-query?name=example.com' | jq\end{lstlisting}
 \end{frame}
 
 
-\begin{frame}{DNS-over-TLS (DoT)}
+\begin{frame}[fragile]{DNS-over-TLS (DoT)}
         \begin{itemize}
                 \item<1-> Устанавливается защищенное TLS-соединение (порт 853)
                 \item<1-> Внутри соединения – стандартный DNS протокол
                 \item<1-> {\small Самая простая инсталляция – проксирование \texttt{nginx} через \texttt{ngx\_stream\_ssl\_module} на обычный DNS}
         \end{itemize}
-        ~\\
+        \begin{lstlisting}
+kdig +tls @8.8.8.8 highload.ru # попробуйте 195.208.4.1
+dig +tls @1.1.1.1 highload.ru\end{lstlisting}
         \begin{itemize}
                 \item<2-> А есть ещё DNS-over-DTLS...
                 \item<3-> ... и DNS-over-QUIC...
@@ -483,30 +492,19 @@ docker cznic/knot:latest \end{lstlisting}
         \end{itemize}
 \end{frame}
 
-\begin{frame}{DNS-over-TLS (DoT). Поддержка}
-СКОРЕЕ ВСЕГО ЗАМЕНЮ ОБЗОРОМ "КАК ПОСМОТРЕТЬ"
+\begin{frame}[fragile]{DNS-over-HTTPS (DoH)}
         \begin{itemize}
-                \item \textbf{Клиенты} \\
-                \texttt{kdig, dig 9.17.7+} % dig 9.17.7 17 марта 2021
-                \item \textbf{Ресолверы} (могут принять) \\
-                \texttt{unbound, CoreDNS, dnsdist, KNOT Resolver}
-                \item \textbf{Ресолверы} (могут спросить) \\
-                \texttt{unbound, CoreDNS, KNOT Resolver, systemd.resolved, Android 9 Pie}
-                \item \textbf{Сервисы} \\
-                \texttt{Google DNS, Cloudflare DNS, Quad9}
-        \end{itemize}
-\end{frame}
-
-\begin{frame}{DNS-over-HTTPS (DoH)}
-        \begin{itemize}
-                \item<1-> Защищенным транспортом является обычный HTTP/2
-                \item<1-> Запросы/ответы --- стандартные DNS-пакеты
-                \item<1-> Формируется специальный HTTP-запрос
+                \item Защищенным транспортом является обычный HTTP/2
+                \item Запросы/ответы --- стандартные DNS-пакеты
+                \item Формируется специальный HTTP-запрос
                 \begin{itemize}
-                        \item<1-> GET --- DNS-пакет кодируется в параметр
-                        \item<1-> POST --- DNS-пакет в \texttt{application/dns-message}
+                        \item GET --- DNS-пакет кодируется в параметр
+                        \item POST --- DNS-пакет в \texttt{application/dns-message}
                 \end{itemize}
         \end{itemize}
+        \begin{lstlisting}
+kdig +https @8.8.8.8 highload.ru # попробуйте 195.208.4.1
+dig +https @1.1.1.1 highload.ru\end{lstlisting}
 \end{frame}
 
 \begin{frame}{DNS-over-HTTPS (DoH). Особенности}
@@ -520,18 +518,6 @@ docker cznic/knot:latest \end{lstlisting}
         \end{itemize}
 \end{frame}
 
-\begin{frame}{DNS-over-HTTPS (DoH). Поддержка}
-СКОРЕЕ ВСЕГО ЗАМЕНЮ ОБЗОРОМ "КАК ПОСМОТРЕТЬ"
-        \begin{itemize}
-                \item \textbf{Клиенты} \\
-                \texttt{kdig 3.0+, dig 9.17.11+} % dig 9.17.11 25 ноября 2020
-                \item \textbf{Ресолверы} (могут принять) \\
-                \texttt{unbound, CoreDNS, dnsdist, KNOT Resolver}
-                \item \textbf{Ресолверы} (могут спросить) \\
-                \texttt{unbound, CoreDNS, KNOT Resolver}
-                \item \textbf{Сервисы} \\
-                \texttt{Google DNS, Cloudflare DNS, Quad9}
-        \end{itemize}
 % Added in 7.62.0
 % curl --doh-url https://cloudflare-dns.com/dns-query https://www.google.com
 
@@ -545,7 +531,20 @@ docker cznic/knot:latest \end{lstlisting}
 % kdig @8.8.4.4 +https +https-get example.com.
 % kdig @8.8.8.8 +https +tls-hostname=dns.google +fastopen example.com.
 
+\begin{frame}{Защита. Must have}
+        \begin{itemize}
+                \item Ресолверы в зонах доверия \\
+                {\small или даже DoH/DoT до публичных серверов}
+                \item Локальные кэши в каждом периметре
+                \begin{itemize}
+                        \item NodeLocal DNSCache в Kubernetes
+                        \item systemd-resolved, unbound, Knot Resolver
+                \end{itemize}
+                \item DoT/DoH через недоверенные сети
+                {\small особенно локальные домены}
+        \end{itemize}
 \end{frame}
+
 
 \begin{frame}{Защита канала. Ложка дегтя}
 % Нет защиты обращения к авторитативным серверам
@@ -575,25 +574,6 @@ dig +short @8.8.8.8 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
                 \item<1-> Cloudflare DNS принципиально \textbf{нет}
                 \item[]<2-> \begin{lstlisting}
 dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
-        \end{itemize}
-\end{frame}
-
-\begin{frame}{Защита DNS и docker}
-% по умолчанию гугл https://github.com/moby/moby/blob/a77317882d010b884a9101c6ad0b2d7db141082f/libnetwork/resolvconf/resolvconf.go#L58
-        \begin{itemize}
-                \item<1-> Никакой защиты
-                \item<2-> Docker понимает и \texttt{systemd-resolved}, и \texttt{resolve.conf}
-                \item<3-> Каждому контейнеру можно указать свои DNS
-                \item<4-> При неудаче умолчание: \textbf{8.8.8.8}
-        \end{itemize}
-\end{frame}
-
-\begin{frame}{Защита DNS и kubernetes}
-        \begin{itemize}
-                \item<1-> CoreDNS --- с ним всё хорошо
-                \item<2-> NodeLocal DNSCache настраиваем как хотим
-                \item<3-> CoreDNS не умеет проверять DNSSEC
-                \item<4-> Knot Resolver умеет
         \end{itemize}
 \end{frame}
 
@@ -628,12 +608,10 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
 \end{frame}
 
 \begin{frame}{Реакционизм. Гоcрегулирование} % претензии к защите 
-        \only<1>{Картинка с самураем и флажками/нашивками РКН/FCC/etc}
         \begin{itemize}
-                \item<2-> Давление UK ISPA % https://www.opennet.ru/opennews/art.shtml?num=51046
-                \item<3-> Большинство «госблокировок» в мире основано на манипуляциях с DNS
-                \item<4-> НСДИ РФ не совместима с DNSSEC % в принципе не намеренно
-                \item<4-> НСДИ РФ не поддерживает защиту % а зря, буква "Б" в Роскомнадзор, ГРЧЦ, ЦМУ ССОП и НСДИ
+                \item Давление UK ISPA и IWF \\ % https://www.opennet.ru/opennews/art.shtml?num=51046
+                \small{\textcolor{blue}{\href{https://www.opennet.ru/opennews/art.shtml?num=51046}{www.opennet.ru/opennews/art.shtml?num=51046}}}
+                \item Большинство «госблокировок» в мире основано на манипуляциях с DNS
         \end{itemize}
 \end{frame}
 
@@ -699,6 +677,10 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
 
 \begin{frame}[t]{Ссылки. DoH/Dot}
 \printbibliography[keyword={doh},notkeyword={en}]
+\end{frame}
+
+\begin{frame}[t]{Ссылки. инциденты}
+\printbibliography[keyword={incidents},notkeyword={en}]
 \end{frame}
 
 \begin{frame}[t]{Ссылки. Разное}
