@@ -199,7 +199,7 @@ docker cznic/knot:latest \end{lstlisting}
         \begin{itemize}
                 \item Каков максимальный размер доменного имени? % Паскалевские строки с длиной в начале и 63 символами, последняя длина 0, всё вместе 255
                 \item Точку на конце надо ставить? % 1. Это удобно программам 2. Их этого произошли правила интерпретации
-                \item Что именно спрашивает ресолвер и что отвечают DNS-сервера при рекурсивном обходе?
+                \item Что именно спрашивает ресолвер, и что отвечают DNS-сервера при рекурсивном обходе?
         \end{itemize}
         % во время подготовки к докладу я нашел ошибку/неточность в сервере NSD
 \end{frame}
@@ -272,7 +272,7 @@ dig +short @a.res-nsdi.ru. rutracker.org A \end{lstlisting}
                 \begin{itemize}
                         \item<2-> ... с использованием госрегулирования
                 \end{itemize}
-                \item<1-> RFC7626 --- 73.1\% могут быть узнаны по слепку DNS \supercite{rfc-7816}
+                \item<1-> RFC7626: 73.1\% могут быть узнаны по слепку DNS \supercite{rfc-7816}
                 \item<2-> Госрегулирование
                 \begin{itemize}
                         \item<2-> Помощь в оперативной блокировке \supercite{mt-free-pre-block}\\
@@ -284,7 +284,7 @@ dig +short @a.res-nsdi.ru. rutracker.org A \end{lstlisting}
 \begin{frame}{А так ли страшен чёрт?}
         \centering\vskip0.5cm\includegraphics[height=0.7\textheight]{monster.jpg}<1>
         \begin{itemize}
-                \item<2-> Вы знаете кто, когда и как использует какой DNS?
+                \item<2-> Вы знаете, кто, когда и как использует какой DNS?
                 \item<3-> Ваш сетевой периметр защищен? Точно?
                 \item<4-> Ваша сеть получает подписанные маршруты?
                         \begin{itemize}
@@ -403,7 +403,7 @@ delv @8.8.8.8 dxdt.ru A\end{lstlisting}
                         \item \small{Не надо все алгоритмы, не тяните за собой легаси}
                 \end{itemize}
                 \item Работает только с DNSSEC
-                \item \textcolor{blue}{\href{https://datatracker.ietf.org/doc/html/rfc4255}{RFC 4255}}\supercite{rfc-4255}
+                \item RFC 4255 --- SSH Fingerprint\supercite{rfc-4255}
         \end{itemize}
 \end{frame}
 
@@ -415,7 +415,7 @@ delv @8.8.8.8 dxdt.ru A\end{lstlisting}
         \begin{itemize}
                 \item<1->DNSCrypt
         \end{itemize}
-        \onslide<2-> Защишенный канал
+        \onslide<2-> Защищенный канал
         \begin{itemize}
                 \item<2->DNS-over-HTTPS Google API
                 \item<2->DNS-over-TLS
@@ -543,7 +543,7 @@ dig +https @1.1.1.1 highload.ru\end{lstlisting}
                         \item NodeLocal DNSCache в Kubernetes
                         \item systemd-resolved, unbound, Knot Resolver
                 \end{itemize}
-                \item DoT/DoH через недоверенные сети
+                \item DoT/DoH через недоверенные сети \\
                 {\small особенно локальные домены}
         \end{itemize}
 \end{frame}
@@ -564,7 +564,7 @@ dig +https @1.1.1.1 highload.ru\end{lstlisting}
         Это расширение DNS
         \begin{itemize}
                 \item<1-> Добавляет в запрос подсеть клиента
-                \item<1-> Например, для геобалансига
+                \item<1-> Например, для геобалансинга
         \end{itemize}
         Поддержка
         \begin{itemize}
@@ -577,33 +577,71 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
         \end{itemize}
 \end{frame}
 
-%\begin{frame}{Как проверить ресолвер}
-%\end{frame}
+\begin{frame}{Известные сервисы отладки}
+	\begin{itemize}
+		\item \texttt{whoami.akamai.net A}
+		\item \texttt{whoami.akamai.net AAAA}
+		\item \texttt{o-o.myaddr.l.google.com TXT}
+		\item \texttt{whoami.cloudflare.com TXT}
+		\item \texttt{whoami.ipv6.akahelp.net TXT}
+		\item \texttt{whoami.ipv4.akahelp.net TXT}
+		\item \texttt{whoami.ds.akahelp.net TXT}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Как проверить ресолвер}
+        Google Public DNS. DNS blocking and hijacking\supercite{google-ts}
+        \begin{lstlisting}
+dig -t TXT test.dns.google.com. '@dns.google.'
+
+dig -t TXT +tcp locations.dns.google.com. '@dns.google.'\end{lstlisting}
+        Have problems with 1.1.1.1? *Read Me First*\supercite{cloudflare-ts}
+        \begin{lstlisting}
+dig +short CHAOS TXT id.server @1.1.1.1
+
+dig @1.1.1.1 whoami.Cloudflare.com txt +short\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Версия сервера}
+        \begin{lstlisting}
+dig +short -c CHAOS -t TXT version.bind @8.8.8.8
+
+dig +short -c CHAOS -t TXT id.server @1.1.1.1\end{lstlisting}%
+        \begin{itemize}
+                \item RFC4892 --- идентификация сервера\supercite{rfc-4892}
+                \item \texttt{HOSTNAME.BIND, VERSION.BIND, ID.SERVER}
+        \end{itemize}
+\end{frame}
+
+\begin{frame}{Настройка локальных кэшей}
+        \begin{itemize}
+                \item включение/выключение QNAME
+                \item Манипуляции с Client subnet
+        \end{itemize}
+\end{frame}
 
 \begin{frame}{Реакционизм. Подделка} % претензии к защите
-        \only<1>{Картинка}%
-        \onslide<2->
         \begin{itemize}
-                \item<2-> Не позволяет подставлять «свой» ответ
+                \item Не позволяет подставлять «свой» ответ
                 \begin{itemize}
-                        \item<3-> Противоречит копоративным политикам
-                        \item<4-> Мешает спецслужбам проводить спецоперации
+                        \item Противоречит корпоративным политикам
+                        \item Мешает спецслужбам проводить спецоперации
                 \end{itemize}
-                \item<5-> Переусложненное обслуживание приводит к ошибкам
+                \item Переусложненное обслуживание приводит к ошибкам
         \end{itemize}
 \end{frame}
 
 \begin{frame}{Реакционизм. Прослушка} % претензии к защите
-        \centering\vskip0.5cm\includegraphics[height=0.7\textheight]{rodina.jpg}<1>
+        %\centering\vskip0.5cm\includegraphics[height=0.7\textheight]{rodina.jpg}<1>
         \begin{itemize}
-                \item<2-> Не позволяет анализировать DNS-запросы
+                \item<1-> Не позволяет анализировать DNS-запросы
                 \begin{itemize}
-                        \item<3-> Нарушает корпоративные стандарты безопасности
-                        \item<4-> Мешает приложениям защиты отслеживать действия браузера
-                        \item<5-> Создаёт видимость безопасности % конечно, есть серебряная пуля
+                        \item<1-> Нарушает корпоративные стандарты безопасности
+                        \item<1-> Мешает приложениям защиты отслеживать действия браузера
+                        \item<1-> Создаёт видимость безопасности % конечно, есть серебряная пуля
                 \end{itemize}
-                \item<6-> Дополнительная нагрузка
-                \item<7-> Цикл получения ответа неприемлимо долгий
+                \item<2-> Дополнительная нагрузка
+                \item<2-> Цикл получения ответа неприемлемо долгий
         \end{itemize}
 \end{frame}
 
@@ -615,8 +653,8 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
         \end{itemize}
 \end{frame}
 
-\begin{frame}{А так ли страшен чёрт?}
-        \centering\vskip0.5cm\includegraphics[height=0.7\textheight]{monster.jpg}
+\begin{frame}{Национальная система доменных имен}
+         \includegraphics[height=0.75\textheight,center]{pic5.png}
 \end{frame}
 
 \begin{frame}{Госрегулирование РФ. НСДИ}
@@ -633,8 +671,8 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
         \end{itemize}
 \end{frame}
 
-\begin{frame}{Безопасность заложенная в НСДИ}
-        \includegraphics[height=0.5\textheight,center]{travolta.png}<2->
+\begin{frame}{Заложенная в НСДИ безопасность}
+         \includegraphics[height=0.5\textheight,center]{travolta.png}<2->
 \end{frame}
 
 \begin{frame}{Многое осталось за кадром}
@@ -667,23 +705,20 @@ dig +short @1.1.1.1 -t TXT o-o.myaddr.l.google.com\end{lstlisting}%
 \nocite{*}
 \setbeamertemplate{frametitle continuation}{}
 
-\begin{frame}[t]{Ссылки. DNSCurve}
+\begin{frame}[t]{Ссылки. DNSCurve и DNSCrypt}
 \printbibliography[keyword={dnscurve},notkeyword={en}]
+\printbibliography[keyword={dnscrypt},notkeyword={en}]
 \end{frame}
 
 \begin{frame}[t]{Ссылки. DNSSEC}
 \printbibliography[keyword={dnssec},notkeyword={en}]
 \end{frame}
 
-\begin{frame}[t]{Ссылки. DNSCrypt}
-\printbibliography[keyword={dnscrypt},notkeyword={en}]
-\end{frame}
-
 \begin{frame}[t]{Ссылки. DoH/Dot}
 \printbibliography[keyword={doh},notkeyword={en}]
 \end{frame}
 
-\begin{frame}[t]{Ссылки. инциденты}
+\begin{frame}[t]{Ссылки. Инциденты}
 \printbibliography[keyword={incidents},notkeyword={en}]
 \end{frame}
 
