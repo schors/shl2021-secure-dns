@@ -11,6 +11,8 @@
 \usepackage[backend=biber,bibstyle=numeric,citestyle=numeric-comp,sorting=none,defernumbers=true,date=long]{biblatex}
 \addbibresource{dns-security.bib}
 
+\usepackage{ulem}
+
 \usetheme{shl2021}
 
 % for biblatex
@@ -188,7 +190,7 @@ docker cznic/knot:latest \end{lstlisting}
                 \item<1-> SSHD определяет домен для подключившегося IP\\{\small и этот факт является одним из источников седых волос у админов}
                 \item<2-> MySQL определяет домен для подключившегося IP
                 \item<3-> Apache определяет домен для подключившегося IP\\{\small даже если \texttt{HostnameLookups Off}, но есть \texttt{Require}}
-                \item<4-> Microsoft Windows постоянно шлет DNS Update в сеть
+                \item<4-> Microsoft Windows постоянно шлёт DNS Update в сеть
                 \item<5-> Docker, Kubernetes, etc
                 \item<6-> \textbf{Запустите tcpdump/WireShark}
         \end{itemize}
@@ -353,19 +355,6 @@ dig +short @a.res-nsdi.ru. rutracker.org A \end{lstlisting}
         \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{DNSSEC. Настройка клиентов} % выбор в зависимости от доверия и цели
-        \begin{itemize}
-                \item Прозрачная проверка\\
-                {\small Потребитель получает фильтрованные ответы } % основной вариант использования
-                \item Явная проверка\\
-                {\small Потребитель явно указывает ресолверу, что хочет получить проверенный результат. Проверяет флаги ответа }
-                \item Усиленная проверка\\
-                {\small Потребитель проверяет подписи сам } % для использования расширений это основной вариант
-        \end{itemize}
-        \begin{lstlisting}
-delv @8.8.8.8 dxdt.ru A\end{lstlisting}
-\end{frame}
-
 \begin{frame}{DNSSEC. Особенности}
         \begin{itemize}
                 \item \textbf{Источник ответа не важен}
@@ -379,6 +368,19 @@ delv @8.8.8.8 dxdt.ru A\end{lstlisting}
         \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]{DNSSEC. Настройка клиентов} % выбор в зависимости от доверия и цели
+        \begin{itemize}
+                \item Прозрачная проверка\\
+                {\small Потребитель получает фильтрованные ответы } % основной вариант использования
+                \item Явная проверка\\
+                {\small Потребитель явно указывает ресолверу, что хочет получить проверенный результат. Проверяет флаги ответа }
+                \item Усиленная проверка\\
+                {\small Потребитель проверяет подписи сам } % для использования расширений это основной вариант
+        \end{itemize}
+        \begin{lstlisting}
+delv @8.8.8.8 dxdt.ru A\end{lstlisting}
+\end{frame}
+
 \begin{frame}{DNSSEC. Must have}
         \begin{itemize}
                 \item<1-> Подпишите свои домены
@@ -388,7 +390,7 @@ delv @8.8.8.8 dxdt.ru A\end{lstlisting}
                 \item<2-> Настройте ваши ресолверы на проверку DNSSEC
                 \begin{itemize}
                         \item<2-> CoreDNS не умеет проверять DNSSEC
-                        \item<2-> \texttt{systemd-resolved, unbound, Knot Resolver} --- умеют
+                        \item<2-> \texttt{\sout{systemd-resolved}, unbound, Knot Resolver} --- умеют
                 \end{itemize}
         \end{itemize}
 \end{frame}
@@ -541,16 +543,16 @@ dig +https @1.1.1.1 highload.ru\end{lstlisting}
                 \item Локальные кэши в каждом периметре
                 \begin{itemize}
                         \item NodeLocal DNSCache в Kubernetes
-                        \item systemd-resolved, unbound, Knot Resolver
+                        \item \sout{systemd-resolved}, unbound, Knot Resolver
                 \end{itemize}
                 \item DoT/DoH через недоверенные сети \\
                 {\small особенно локальные домены}
         \end{itemize}
 \end{frame}
 
-%\begin{frame}{Защита канала. Ложка дегтя}
-% Нет защиты обращения к авторитативным серверам
-%\end{frame}
+\begin{frame}{Защита канала. Вот незадача}
+        \centering\includegraphics[height=0.7\textheight]{pic6.png}
+\end{frame}
 
 % Experimental DNS-over-TLS Auto-discovery
 % https://github.com/CZ-NIC/knot-resolver/tree/c8cb9740f8ebd34219c7d860106969fcbb6c7bf6/modules/experimental_dot_auth
@@ -615,7 +617,7 @@ dig +short -c CHAOS -t TXT id.server @1.1.1.1\end{lstlisting}%
 
 \begin{frame}{Настройка локальных кэшей}
         \begin{itemize}
-                \item включение/выключение QNAME
+                \item Включение/выключение QNAME
                 \item Манипуляции с Client subnet
         \end{itemize}
 \end{frame}
