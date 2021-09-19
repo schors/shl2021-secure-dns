@@ -191,7 +191,7 @@ docker cznic/knot:latest \end{lstlisting}
                 \item<2-> MySQL определяет домен для подключившегося IP
                 \item<3-> Apache определяет домен для подключившегося IP\\{\small даже если \texttt{HostnameLookups Off}, но есть \texttt{Require}}
                 \item<4-> Microsoft Windows постоянно шлёт DNS Update в сеть
-                \item<5-> Docker, Kubernetes, etc
+                \item<5-> Docker, Kubernetes, etc...
                 \item<6-> \textbf{Запустите tcpdump/WireShark}
         \end{itemize}
 \end{frame}
@@ -212,10 +212,11 @@ docker cznic/knot:latest \end{lstlisting}
 
 \begin{frame}{Особенности классического DNS}
         \begin{itemize}
-                \item UDP транспорт. Нет соединения
+                \item UDP-транспорт. Нет соединения
                 \item Нет идентификации серверов DNS
                 \item Нет контроля данных
                 \item Нет шифрования
+                \item \textbf{Мало что изменилось с тех пор}
         \end{itemize}
 \end{frame}
 
@@ -332,7 +333,7 @@ dig +short @a.res-nsdi.ru. rutracker.org A \end{lstlisting}
         \begin{itemize}
                 \item Концепция
                 \begin{itemize}
-                        \item Источник записи не важен. Используя доверенный корневой ключ, возможно проверить любую подписанную запись
+                        \item Источник записи неважен. Используя доверенный корневой ключ, возможно проверить любую подписанную запись
                 \end{itemize}
                 \item Принцип действия
                 \begin{itemize}
@@ -357,7 +358,7 @@ dig +short @a.res-nsdi.ru. rutracker.org A \end{lstlisting}
 
 \begin{frame}{DNSSEC. Особенности}
         \begin{itemize}
-                \item \textbf{Источник ответа не важен}
+                \item \textbf{Источник ответа неважен}
                 \item Требует аккуратности и непрерывного обслуживания даже в статическом состоянии
                 \item Требует стартовых настроек клиента \\
                 {\small требуются актуальные корневые ключи}
@@ -385,7 +386,7 @@ delv @8.8.8.8 dxdt.ru A\end{lstlisting}
         \begin{itemize}
                 \item<1-> Подпишите свои домены
                 \begin{itemize}
-                        \item<1-> CoreDNS и Knot DNS - отличные реализации
+                        \item<1-> CoreDNS и Knot DNS --- отличные реализации
                 \end{itemize}
                 \item<2-> Настройте ваши ресолверы на проверку DNSSEC
                 \begin{itemize}
@@ -472,7 +473,7 @@ curl -H 'accept: application/dns-json' \
 \begin{frame}[fragile]{DNS-over-TLS (DoT)}
         \begin{itemize}
                 \item<1-> Устанавливается защищенное TLS-соединение (порт 853)
-                \item<1-> Внутри соединения – стандартный DNS протокол
+                \item<1-> Внутри соединения – стандартный DNS-протокол
                 \item<1-> {\small Самая простая инсталляция – проксирование \texttt{nginx} через \texttt{ngx\_stream\_ssl\_module} на обычный DNS}
         \end{itemize}
         \begin{lstlisting}
@@ -538,8 +539,6 @@ dig +https @1.1.1.1 highload.ru\end{lstlisting}
 
 \begin{frame}{Защита. Must have}
         \begin{itemize}
-                \item Ресолверы в зонах доверия \\
-                {\small или даже DoH/DoT до публичных серверов}
                 \item Локальные кэши в каждом периметре
                 \begin{itemize}
                         \item NodeLocal DNSCache в Kubernetes
@@ -547,6 +546,7 @@ dig +https @1.1.1.1 highload.ru\end{lstlisting}
                 \end{itemize}
                 \item DoT/DoH через недоверенные сети \\
                 {\small особенно локальные домены}
+                \item Агрегирующие DoT/DoH-ресолверы
         \end{itemize}
 \end{frame}
 
@@ -677,23 +677,31 @@ dig +short -c CHAOS -t TXT id.server @1.1.1.1\end{lstlisting}%
          \includegraphics[height=0.5\textheight,center]{travolta.png}<2->
 \end{frame}
 
+\begin{frame}{Держитесь подальше\\от торфяных болот}
+        \begin{itemize}
+                \item<1-> DNS таит в себе множество угроз
+                \item<1-> Не используйте DNS для всего на свете
+                \item<1-> Избегайте использования DNS
+                \item[]<2->{\small когда есть специализированные сервисы}
+        \end{itemize}
+\end{frame}
+
 \begin{frame}{Многое осталось за кадром}
         \begin{itemize}
-                \item EDNS(0) Padding, Cookies, etc
+                \item EDNS(0) Padding, Cookies, etc...
                 \item Обслуживание DNS, DNSSEC, DoT/DoH
-                \item Применение DNSSEC: DANE, etc
+                \item Применение DNSSEC: DANE, etc...
                 \item Обзор серверов, включая \texttt{stub-ресолверы}
                 \item Обзор клиентов и инструментов
                 \item DNS Stamps (ссылки sdna://)
                 \item \texttt{glibc} и \texttt{resolv.conf}
-                \item Ampliphication attack, etc
+                \item Ampliphication attack, etc...
                 \item \textbf{...}
         \end{itemize}
 \end{frame}
 
 \begin{frame}{Вопросы}
-        \center Перед докладом я многое освежил в памяти, многое не вошло в доклад
-        \vskip1cm
+        \vskip2cm
         \center В любом случае пишите мне
         \vskip2cm
         \center{schors@gmail.com}
